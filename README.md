@@ -15,7 +15,7 @@ Este repositório contém experimentos e testes para predição utilizando técn
 ## Requisitos
 
 - Python 3.x
-- Bibliotecas: `numpy`, `pandas`, `scikit-learn`
+- Bibliotecas: `numpy`, `pandas`, `scikit-learn`, `mysql-connector-python`
 
 ## Licença
 Este projeto está licenciado sob a Licença MIT.
