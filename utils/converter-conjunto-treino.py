@@ -1,5 +1,7 @@
 import pandas as pd
-from dados import get_jogos_temporada  # Importa a função do arquivo dados.py
+from dados import get_jogos_temporada
+from dados import formatar_medias
+
 import json
 from sklearn.preprocessing import MinMaxScaler
 
@@ -9,9 +11,13 @@ def save_to_csv(data, filename):
 
 def descompactar_estatisticas(jogos):
     dados_formatados = []
+
     for jogo in jogos:
-        casa_estatisticas = json.loads(jogo['estatisticas_casa'])
-        visitante_estatisticas = json.loads(jogo['estatisticas_visitantes'])
+        print('\n', jogo)
+
+    for jogo in jogos:
+        casa_estatisticas = jogo['estatisticas_casa']  # já é um dicionário
+        visitante_estatisticas = jogo['estatisticas_visitantes']  # já é um dicionário
         
         # Criar um dicionário com as estatísticas descompactadas
         dados = {
@@ -110,31 +116,44 @@ def normalizar_dados(dados):
     
     return df.to_dict(orient='records')
 
-def split_and_save_data():
+
+def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5):
     # Obter todos os jogos da temporada
-    jogos = get_jogos_temporada('2008-2009')
+    jogos_treino = get_jogos_temporada(temporada, quantidade_jogos)
+    jogos_teste = get_jogos_temporada(temporada, quantidade_jogos)
+
+    # Formatar jogos para treino
+    jogos_treino = formatar_medias(jogos_treino, True)
+    # Formatar jogos para teste
+    jogos_teste = formatar_medias(jogos_teste, False)
     
     # Descompactar estatísticas
-    jogos_formatados = descompactar_estatisticas(jogos)
-    
-    # # Normalizar os dados
-    # jogos_normalizados = normalizar_dados(jogos_formatados)
-    
+    jogos_formatados_treino = descompactar_estatisticas(jogos_treino)
+    jogos_formatados_teste = descompactar_estatisticas(jogos_teste)
+
     # Ordenar os jogos pela data
-    jogos_sorted = sorted(jogos_formatados, key=lambda x: x['data'])
-    
-    # Definir o ponto de divisão (80% treino e 20% teste)
-    split_index = int(len(jogos_sorted) * 0.4)
+    # jogos_sorted_treino = sorted(jogos_formatados_treino, key=lambda x: x['data'])
+    # jogos_sorted_teste = sorted(jogos_formatados_teste, key=lambda x: x['data'])
+
+    # # Normalizar os dados
+    jogos_normalizados_treino = normalizar_dados(jogos_formatados_treino)
+    jogos_normalizados_teste = normalizar_dados(jogos_formatados_treino)
+
+    # Calcular os índices de divisão
+    split_index = int(len(jogos_treino) * porcentagem_treino)
     
     # Dividir os dados em treino e teste com base na ordem das datas
-    treino = jogos_sorted[:split_index]
-    teste = jogos_sorted[split_index:]
-    
+    treino = jogos_normalizados_treino[:split_index]
+    teste = jogos_normalizados_treino[split_index:]
+
     # Salvar os conjuntos em arquivos CSV
     save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/treino.csv')
     save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/teste.csv')
+    print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
 
 # Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
-    split_and_save_data()
-    print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
+    temporada = '2015-2016'
+    quantidade_jogos = 56
+    split_and_save_data(temporada)
+    
