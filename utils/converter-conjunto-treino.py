@@ -153,7 +153,7 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5
 
 # Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
-    temporada = '2015-2016'
+    temporada = '2008-2009'
     quantidade_jogos = 56
     split_and_save_data(temporada)
     
