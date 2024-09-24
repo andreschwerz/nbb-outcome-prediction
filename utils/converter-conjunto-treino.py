@@ -136,15 +136,15 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5
     # jogos_sorted_teste = sorted(jogos_formatados_teste, key=lambda x: x['data'])
 
     # # Normalizar os dados
-    jogos_normalizados_treino = normalizar_dados(jogos_formatados_treino)
-    jogos_normalizados_teste = normalizar_dados(jogos_formatados_treino)
+    # jogos_normalizados_treino = normalizar_dados(jogos_formatados_treino)
+    # jogos_normalizados_teste = normalizar_dados(jogos_formatados_teste)
 
     # Calcular os índices de divisão
     split_index = int(len(jogos_treino) * porcentagem_treino)
     
     # Dividir os dados em treino e teste com base na ordem das datas
-    treino = jogos_normalizados_treino[:split_index]
-    teste = jogos_normalizados_treino[split_index:]
+    treino = jogos_formatados_treino[:split_index]
+    teste = jogos_formatados_teste[split_index:]
 
     # Salvar os conjuntos em arquivos CSV
     save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/treino.csv')
