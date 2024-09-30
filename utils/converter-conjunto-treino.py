@@ -117,7 +117,7 @@ def normalizar_dados(dados):
     return df.to_dict(orient='records')
 
 
-def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.8):
+def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5):
     # Obter todos os jogos da temporada
     jogos_treino = get_jogos_temporada(temporada, quantidade_jogos)
     jogos_teste = get_jogos_temporada(temporada, quantidade_jogos)
@@ -131,13 +131,6 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.8
     jogos_formatados_treino = descompactar_estatisticas(jogos_treino)
     jogos_formatados_teste = descompactar_estatisticas(jogos_teste)
 
-    # Ordenar os jogos pela data
-    # jogos_sorted_treino = sorted(jogos_formatados_treino, key=lambda x: x['data'])
-    # jogos_sorted_teste = sorted(jogos_formatados_teste, key=lambda x: x['data'])
-
-    # # Normalizar os dados
-    # jogos_normalizados_treino = normalizar_dados(jogos_formatados_treino)
-    # jogos_normalizados_teste = normalizar_dados(jogos_formatados_teste)
 
     # Calcular os índices de divisão
     split_index = int(len(jogos_treino) * porcentagem_treino)
@@ -145,6 +138,9 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.8
     # Dividir os dados em treino e teste com base na ordem das datas
     treino = jogos_formatados_treino[:split_index]
     teste = jogos_formatados_teste[split_index:]
+
+    treino = normalizar_dados(treino)
+    teste = normalizar_dados(teste)
 
     # Salvar os conjuntos em arquivos CSV
     save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/56_jogos/0,8/treino.csv')
@@ -154,6 +150,5 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.8
 # Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
     temporada = '2008-2009'
-    quantidade_jogos = 56
-    split_and_save_data(temporada)
+    split_and_save_data(temporada, porcentagem_treino=0.5)
     
