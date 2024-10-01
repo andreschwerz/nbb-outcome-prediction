@@ -143,8 +143,8 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5
     teste = normalizar_dados(teste)
 
     # Salvar os conjuntos em arquivos CSV
-    save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/56_jogos/0,8/treino.csv')
-    save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/56_jogos/0,8/teste.csv')
+    save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,8/treino.csv')
+    save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,8/teste.csv')
     print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
 
 # Executar a divisão e salvar os arquivos
