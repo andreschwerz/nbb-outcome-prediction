@@ -81,6 +81,6 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste):
 # Exemplo de uso
 if __name__ == "__main__":
     temporada = '2008-2009'
-    qtd_jogos_treino = 8
+    qtd_jogos_treino = 16
     qtd_jogos_teste = 1
     gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste)

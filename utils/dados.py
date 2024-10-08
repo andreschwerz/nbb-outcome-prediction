@@ -33,7 +33,6 @@ def get_jogos_equipe(equipe):
         cursor.close()
         conn.close()
 
-
 def get_jogos_equipe_casa(equipe):
     conn = mysql.connector.connect(**db_config)
     try:
@@ -58,11 +57,15 @@ def get_jogos_equipe_visitante(equipe):
         cursor.close()
         conn.close()
 
-def calcular_media_estatisticas(jogos):
+def calcular_media_estatisticas(jogos, equipe):
     total_estatisticas = None
     for jogo in jogos:
-        estatisticas = json.loads(jogo['estatisticas_casa'])
-        
+        # Verifica se a equipe é a equipe da casa ou visitante
+        if jogo['equipe_casa'] == equipe:
+            estatisticas = json.loads(jogo['estatisticas_casa'])
+        else:
+            estatisticas = json.loads(jogo['estatisticas_visitantes'])
+            
         # Inicializa o total_estatisticas se for a primeira iteração
         if total_estatisticas is None:
             total_estatisticas = estatisticas
@@ -78,34 +81,13 @@ def calcular_media_estatisticas(jogos):
     
     return total_estatisticas
 
-def get_media_estatisticas_time_treino(equipe, data_jogo):
-    conn = mysql.connector.connect(**db_config)
-    try:
-        cursor = conn.cursor(dictionary=True)
-        # Seleciona todos os jogos anteriores e o jogo especificado
-        query = """
-            SELECT estatisticas_casa FROM jogos
-            WHERE (equipe_casa = %s OR equipe_visitante = %s) AND data <= %s
-            ORDER BY data
-        """
-        cursor.execute(query, (equipe, equipe, data_jogo))
-        jogos = cursor.fetchall()
-        
-        if jogos:
-            return calcular_media_estatisticas(jogos)
-        else:
-            return {}
-    finally:
-        cursor.close()
-        conn.close()
-
 def get_media_estatisticas_time_teste(equipe, data_jogo):
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)
         # Seleciona todos os jogos anteriores ao jogo especificado
         query = """
-            SELECT estatisticas_casa FROM jogos
+            SELECT equipe_casa, equipe_visitante, estatisticas_casa, estatisticas_visitantes FROM jogos
             WHERE (equipe_casa = %s OR equipe_visitante = %s) AND data < %s
             ORDER BY data
         """
@@ -113,39 +95,54 @@ def get_media_estatisticas_time_teste(equipe, data_jogo):
         jogos = cursor.fetchall()
         
         if jogos:
-            return calcular_media_estatisticas(jogos)
+            return calcular_media_estatisticas(jogos, equipe)
         else:
             return {}
     finally:
         cursor.close()
         conn.close()
 
-def get_jogos_temporada(ano, quantidade_jogos=None):
+def get_media_estatisticas_time_treino(equipe, data_jogo):
+    conn = mysql.connector.connect(**db_config)
+    try:
+        cursor = conn.cursor(dictionary=True)
+        # Seleciona todos os jogos anteriores e o jogo especificado
+        query = """
+            SELECT equipe_casa, equipe_visitante, estatisticas_casa, estatisticas_visitantes FROM jogos
+            WHERE (equipe_casa = %s OR equipe_visitante = %s) AND data <= %s
+            ORDER BY data
+        """
+        cursor.execute(query, (equipe, equipe, data_jogo))
+        jogos = cursor.fetchall()
+        
+        if jogos:
+            return calcular_media_estatisticas(jogos, equipe)
+        else:
+            return {}
+    finally:
+        cursor.close()
+        conn.close()
+
+def get_jogos_temporada(ano):
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos WHERE ano = %s ORDER BY data"
-
-        if quantidade_jogos is not None:
-            query += " LIMIT %s"
-            cursor.execute(query, (ano, quantidade_jogos))
-        else:
-            cursor.execute(query, (ano,))
-        
+        cursor.execute(query, (ano,))
         results = cursor.fetchall()
         return results
     finally:
         cursor.close()
         conn.close()
 
-def formatar_medias (jogos, isTreino):
+def formatar_medias(jogos, isTreino):
     jogos_nova = jogos
     for jogo in jogos_nova:
         equipe_casa = jogo['equipe_casa']
         equipe_visitante = jogo['equipe_visitante']
         data_jogo = jogo['data']
         
-        if(isTreino):
+        if isTreino:
             media_casa = get_media_estatisticas_time_treino(equipe_casa, data_jogo)
             media_visitante = get_media_estatisticas_time_treino(equipe_visitante, data_jogo)
         else:
@@ -161,9 +158,9 @@ def formatar_medias (jogos, isTreino):
 # Exemplo de uso
 if __name__ == "__main__":
     temporada = '2008-2009'
-    jogos = get_jogos_temporada(temporada)
+    # jogos = get_jogos_temporada(temporada)
     # jogos = get_jogos_equipe("Minas")
  
-    for jogo in jogos:
-        print("\n", jogo)
+    # for jogo in jogos:
+    #     print("\n", jogo)
     
