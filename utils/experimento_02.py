@@ -69,8 +69,12 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste):
         teste_formatado = descompactar_estatisticas(teste)
 
         # Salvar os arquivos de treino e teste
-        save_to_csv(treino_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/treino_{num_arquivo}.csv')
-        save_to_csv(teste_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/teste_{num_arquivo}.csv')
+        save_to_csv(treino_formatado, f'/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009/treino_{num_arquivo}.csv')
+        save_to_csv(teste_formatado, f'/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009/teste_{num_arquivo}.csv')
+
+
+        # save_to_csv(treino_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/treino_{num_arquivo}.csv')
+        # save_to_csv(teste_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/teste_{num_arquivo}.csv')
 
         print(f'Arquivos treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
 
@@ -81,6 +85,6 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste):
 # Exemplo de uso
 if __name__ == "__main__":
     temporada = '2008-2009'
-    qtd_jogos_treino = 16
+    qtd_jogos_treino = 8
     qtd_jogos_teste = 1
     gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste)
