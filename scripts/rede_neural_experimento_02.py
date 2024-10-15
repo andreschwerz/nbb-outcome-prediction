@@ -8,12 +8,14 @@ from sklearn.impute import SimpleImputer
 import os
 
 # Diretório onde estão os arquivos de treino e teste
-data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009'
-#treino_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/treino.csv'
-#teste_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/teste.csv'
+# data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009'
+data_dir = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/2-1/'
+
+# treino_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/treino.csv'
+# teste_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/teste.csv'
 
 # Número de arquivos de treino e teste (N)
-N = 26  # Definir o número correto de arquivos de treino e teste
+N = 79  # Definir o número correto de arquivos de treino e teste
 
 # Lista para armazenar as acurácias
 accuracies = []
