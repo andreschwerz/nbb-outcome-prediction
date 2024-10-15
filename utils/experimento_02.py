@@ -1,22 +1,20 @@
 import pandas as pd
+import os
 from dados import get_jogos_temporada
 from dados import formatar_medias
 
-def save_to_csv(data, filename):
+def save_to_csv(data, filepath):
     df = pd.DataFrame(data)
-    df.to_csv(filename, index=False)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)  # Cria o diretório se não existir
+    df.to_csv(filepath, index=False)
 
 def descompactar_estatisticas(jogos):
     dados_formatados = []
 
     for jogo in jogos:
-        print('\n', jogo)
-
-    for jogo in jogos:
-        casa_estatisticas = jogo['estatisticas_casa']  # já é um dicionário
-        visitante_estatisticas = jogo['estatisticas_visitantes']  # já é um dicionário
+        casa_estatisticas = jogo['estatisticas_casa']
+        visitante_estatisticas = jogo['estatisticas_visitantes']
         
-        # Criar um dicionário com as estatísticas descompactadas
         dados = {
             'placar_casa': jogo['placar_casa'],
             'placar_visitante': jogo['placar_visitante'],
@@ -26,7 +24,6 @@ def descompactar_estatisticas(jogos):
             'ano': jogo['ano'],
             'equipe_casa': jogo['equipe_casa'],
             'equipe_visitante': jogo['equipe_visitante'],
-            
             # Estatísticas da equipe da casa
             'Pts_casa': casa_estatisticas.get('Pts', 0),
             '3P_casa': casa_estatisticas.get('3P', 0),
@@ -90,7 +87,7 @@ def descompactar_estatisticas(jogos):
         dados_formatados.append(dados)
     return dados_formatados
 
-def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste):
+def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path):
     jogos_treino = get_jogos_temporada(temporada)
     jogos_teste = get_jogos_temporada(temporada)
     
@@ -102,35 +99,35 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste):
     num_arquivo = 1
     
     while indice < len(jogos_treino_formatados):
-        # Definir os blocos de treino e teste
         treino = jogos_treino_formatados[indice:indice+qtd_jogos_treino]
         teste = jogos_teste_formatados[indice+qtd_jogos_treino:indice+qtd_jogos_treino+qtd_jogos_teste]
-        
-        # Parar se não houver jogos suficientes para teste
+
         if not teste:
             break
 
-        # Descompactar as estatísticas
         treino_formatado = descompactar_estatisticas(treino)
         teste_formatado = descompactar_estatisticas(teste)
 
+        final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+        # Definir o caminho do diretório para salvar os arquivos
+        temporada_path = os.path.join(final_path)
+        
         # Salvar os arquivos de treino e teste
-        # save_to_csv(treino_formatado, f'/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009/treino_{num_arquivo}.csv')
-        # save_to_csv(teste_formatado, f'/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009/teste_{num_arquivo}.csv')
-
-
-        save_to_csv(treino_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/2-1/treino_{num_arquivo}.csv')
-        save_to_csv(teste_formatado, f'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/2-1/teste_{num_arquivo}.csv')
+        save_to_csv(treino_formatado, f'{temporada_path}/treino_{num_arquivo}.csv')
+        save_to_csv(teste_formatado, f'{temporada_path}/teste_{num_arquivo}.csv')
 
         print(f'Arquivos treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
 
-        # Incrementar para o próximo lote de jogos
         indice += qtd_jogos_treino + qtd_jogos_teste
         num_arquivo += 1
 
 # Exemplo de uso
 if __name__ == "__main__":
     temporada = '2008-2009'
-    qtd_jogos_treino = 2
+    qtd_jogos_treino = 16
     qtd_jogos_teste = 1
-    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste)
+    # base_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/'
+    base_path = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/'
+
+    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path)
+
