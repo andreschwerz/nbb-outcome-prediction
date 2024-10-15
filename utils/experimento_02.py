@@ -1,6 +1,7 @@
 import pandas as pd
 import os
 from dados import get_jogos_temporada
+from dados import get_all_jogos
 from dados import formatar_medias
 
 def save_to_csv(data, filepath):
@@ -87,9 +88,13 @@ def descompactar_estatisticas(jogos):
         dados_formatados.append(dados)
     return dados_formatados
 
-def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path):
-    jogos_treino = get_jogos_temporada(temporada)
-    jogos_teste = get_jogos_temporada(temporada)
+def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True):
+    if filtrarPorTemporada:
+        jogos_treino = get_jogos_temporada(temporada)
+        jogos_teste = get_jogos_temporada(temporada)
+    else:
+        jogos_treino = get_all_jogos()
+        jogos_teste = get_all_jogos()
     
     # Formatar os jogos com médias para treino
     jogos_treino_formatados = formatar_medias(jogos_treino, True)
@@ -108,7 +113,11 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         treino_formatado = descompactar_estatisticas(treino)
         teste_formatado = descompactar_estatisticas(teste)
 
-        final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+        if filtrarPorTemporada:
+            final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+        else:
+            final_path = base_path + 'all/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+        
         # Definir o caminho do diretório para salvar os arquivos
         temporada_path = os.path.join(final_path)
         
@@ -123,11 +132,12 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
 # Exemplo de uso
 if __name__ == "__main__":
+    filtrarPorTemporada = False
     temporada = '2008-2009'
-    qtd_jogos_treino = 16
+    qtd_jogos_treino = 8
     qtd_jogos_teste = 1
     # base_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/'
     base_path = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/'
 
-    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path)
+    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada)
 

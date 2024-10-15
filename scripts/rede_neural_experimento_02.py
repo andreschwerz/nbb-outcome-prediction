@@ -89,7 +89,7 @@ def run_model(data_dir):
 
 if __name__ == '__main__':
     # data_dir = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/8-1/'
-    data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/2008-2009/16-1/'
+    data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/all/8-1/'
 
     run_model(data_dir)
 
