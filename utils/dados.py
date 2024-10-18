@@ -4,7 +4,7 @@ import json
 # Configuração de conexão com o banco de dados
 db_config = {
     'user': 'root',
-    'password': 'root',
+    'password': '',
     'host': 'localhost',
     'database': 'mydb'
 }
