@@ -9,7 +9,7 @@ import os
 import re
 
 def extract_number(file_name):
-    """Extrai o número do nome do arquivo."""
+    # Extrai o número do nome do arquivo.
     match = re.search(r'(\d+)', file_name)
     return int(match.group(1)) if match else -1
 
@@ -88,7 +88,7 @@ def run_model(data_dir):
     print(f'Acurácia média de todos os modelos: {mean_accuracy:.2f}')
 
 if __name__ == '__main__':
-    data_dir = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/2008-2009/8-1/'
+    data_dir = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/all/8-1/'
     # data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/all/8-1/'
 
     run_model(data_dir)

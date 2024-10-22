@@ -119,8 +119,8 @@ def normalizar_dados(dados):
 
 def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5):
     # Obter todos os jogos da temporada
-    jogos_treino = get_jogos_temporada(temporada, quantidade_jogos)
-    jogos_teste = get_jogos_temporada(temporada, quantidade_jogos)
+    jogos_treino = get_jogos_temporada(temporada)
+    jogos_teste = get_jogos_temporada(temporada)
 
     # Formatar jogos para treino
     jogos_treino = formatar_medias(jogos_treino, True)
@@ -139,16 +139,16 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5
     treino = jogos_formatados_treino[:split_index]
     teste = jogos_formatados_teste[split_index:]
 
-    treino = normalizar_dados(treino)
-    teste = normalizar_dados(teste)
+    # treino = normalizar_dados(treino)
+    # teste = normalizar_dados(teste)
 
     # Salvar os conjuntos em arquivos CSV
-    save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,8/treino.csv')
-    save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,8/teste.csv')
+    save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/treino.csv')
+    save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/teste.csv')
     print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
 
 # Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
     temporada = '2008-2009'
-    split_and_save_data(temporada, porcentagem_treino=0.5)
+    split_and_save_data(temporada, porcentagem_treino=0.9)
     

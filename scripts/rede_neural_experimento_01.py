@@ -7,8 +7,8 @@ from sklearn.metrics import accuracy_score
 from sklearn.impute import SimpleImputer
 
 # Ajustar os caminhos dos arquivos para Windows
-treino_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/treino.csv'
-teste_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/teste.csv'
+treino_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/treino.csv'
+teste_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/teste.csv'
 
 # Carregar os dados
 treino_df = pd.read_csv(treino_path)
