@@ -88,7 +88,7 @@ def descompactar_estatisticas(jogos):
         dados_formatados.append(dados)
     return dados_formatados
 
-def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True):
+def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True, num_jogos_passados_media=8):
     if filtrarPorTemporada:
         jogos_treino = get_jogos_temporada(temporada)
         jogos_teste = get_jogos_temporada(temporada)
@@ -97,8 +97,8 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         jogos_teste = get_all_jogos()
     
     # Formatar os jogos com médias para treino
-    jogos_treino_formatados = formatar_medias(jogos_treino, True)
-    jogos_teste_formatados = formatar_medias(jogos_teste, False)
+    jogos_treino_formatados = formatar_medias(jogos_treino, True, num_jogos_passados_media)
+    jogos_teste_formatados = formatar_medias(jogos_teste, False, num_jogos_passados_media)
 
     indice = 0
     num_arquivo = 1
@@ -125,19 +125,30 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         save_to_csv(treino_formatado, f'{temporada_path}/treino_{num_arquivo}.csv')
         save_to_csv(teste_formatado, f'{temporada_path}/teste_{num_arquivo}.csv')
 
-        print(f'Arquivos treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
+        print(f'Arquivos temporada - {temporada} - treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
 
         indice += qtd_jogos_treino + qtd_jogos_teste
         num_arquivo += 1
 
-# Exemplo de uso
 if __name__ == "__main__":
-    filtrarPorTemporada = False
-    temporada = '2008-2009'
-    qtd_jogos_treino = 14
+
+    temporadas = ['2008-2009', '2009-2010', '2011-2012',
+                  '2012-2013', '2013-2014', '2014-2015',
+                  '2015-2016', '2016-2017', '2017-2018', '2019-2020'
+                  '2018-2019', '2020-2021', '2021-2022',
+                  '2022-2023', '2023-2024'
+                 ]
+    
+    filtrarPorTemporada = True
+    qtd_jogos_treino = 8
     qtd_jogos_teste = 1
-    base_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/'
-    # base_path = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/'
 
-    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada)
+    # base_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/'
+    base_path = '/home/alunos/a2252805/experimentos-predi-o-nbb/data/experimento_02/'
+    
+    num_jogos_passados_media = 8
 
+    # Loop através de todas as temporadas
+    # for temporada in temporadas:
+    temporada = '2019-2020'
+    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada, num_jogos_passados_media)

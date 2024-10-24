@@ -13,7 +13,7 @@ def extract_number(file_name):
     match = re.search(r'(\d+)', file_name)
     return int(match.group(1)) if match else -1
 
-def run_model(data_dir):
+def run_model(data_dir, temporada):
     # Lista para armazenar as acurácias
     accuracies = []
 
@@ -81,16 +81,23 @@ def run_model(data_dir):
         # Avaliar o desempenho do modelo
         accuracy = accuracy_score(y_test, y_pred)
         accuracies.append(accuracy)  # Armazenar a acurácia na lista
-        print(f'Arquivo {treino_file}: Acurácia do modelo: {accuracy:.2f}')
+        # print(f'Arquivo {treino_file}: Acurácia do modelo: {accuracy:.2f}')
 
     # Calcular a acurácia média de todos os modelos
     mean_accuracy = sum(accuracies) / len(accuracies)
-    print(f'Acurácia média de todos os modelos: {mean_accuracy:.2f}')
+    print(f'Acurácia média de todos os modelos - {temporada}: {mean_accuracy:.2f}')
 
 if __name__ == '__main__':
-    data_dir = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/all/8-1/'
-    # data_dir = '/home/alunos/a2252805/Área de Trabalho/experimentos-predi-o-nbb/data/experimento_02/all/8-1/'
+    temporadas = ['2008-2009', '2009-2010', '2011-2012',
+                  '2012-2013', '2013-2014', '2014-2015',
+                  '2015-2016', '2016-2017', '2018-2019', '2019-2020',
+                  '2020-2021', '2021-2022', '2022-2023',
+                  '2023-2024'
+                 ]
 
-    run_model(data_dir)
+    base_path = '/home/alunos/a2252805/experimentos-predi-o-nbb/data/experimento_02/'
 
+    for temporada in temporadas:
+        data_dir = f'{base_path}{temporada}/8-1/'
+        run_model(data_dir, temporada)
 

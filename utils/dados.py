@@ -4,7 +4,7 @@ import json
 # Configuração de conexão com o banco de dados
 db_config = {
     'user': 'root',
-    'password': '',
+    'password': 'password',
     'host': 'localhost',
     'database': 'mydb'
 }
@@ -57,7 +57,11 @@ def get_jogos_equipe_visitante(equipe):
         cursor.close()
         conn.close()
 
-def calcular_media_estatisticas(jogos, equipe):
+def calcular_media_estatisticas(jogos, equipe, num_jogos_passados_media=8):
+    # Limita os jogos aos últimos num_jogos_passados_media jogos, mas só se houver mais jogos que o limite
+    if len(jogos) > num_jogos_passados_media:
+        jogos = jogos[-num_jogos_passados_media:]
+    
     total_estatisticas = None
     for jogo in jogos:
         # Verifica se a equipe é a equipe da casa ou visitante
@@ -76,12 +80,13 @@ def calcular_media_estatisticas(jogos, equipe):
     
     # Calcula a média
     num_jogos = len(jogos)
-    for key in total_estatisticas:
-        total_estatisticas[key] /= num_jogos
+    if num_jogos > 0:
+        for key in total_estatisticas:
+            total_estatisticas[key] /= num_jogos
     
     return total_estatisticas
 
-def get_media_estatisticas_time_teste(equipe, data_jogo):
+def get_media_estatisticas_time_teste(equipe, data_jogo, num_jogos_passados_media=8):
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)
@@ -95,14 +100,14 @@ def get_media_estatisticas_time_teste(equipe, data_jogo):
         jogos = cursor.fetchall()
         
         if jogos:
-            return calcular_media_estatisticas(jogos, equipe)
+            return calcular_media_estatisticas(jogos, equipe, num_jogos_passados_media)
         else:
             return {}
     finally:
         cursor.close()
         conn.close()
 
-def get_media_estatisticas_time_treino(equipe, data_jogo):
+def get_media_estatisticas_time_treino(equipe, data_jogo, num_jogos_passados_media=8):
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)
@@ -116,7 +121,7 @@ def get_media_estatisticas_time_treino(equipe, data_jogo):
         jogos = cursor.fetchall()
         
         if jogos:
-            return calcular_media_estatisticas(jogos, equipe)
+            return calcular_media_estatisticas(jogos, equipe, num_jogos_passados_media)
         else:
             return {}
     finally:
@@ -135,7 +140,7 @@ def get_jogos_temporada(ano):
         cursor.close()
         conn.close()
 
-def formatar_medias(jogos, isTreino):
+def formatar_medias(jogos, isTreino, num_jogos_passados_media):
     jogos_nova = jogos
     for jogo in jogos_nova:
         equipe_casa = jogo['equipe_casa']
@@ -143,11 +148,11 @@ def formatar_medias(jogos, isTreino):
         data_jogo = jogo['data']
         
         if isTreino:
-            media_casa = get_media_estatisticas_time_treino(equipe_casa, data_jogo)
-            media_visitante = get_media_estatisticas_time_treino(equipe_visitante, data_jogo)
+            media_casa = get_media_estatisticas_time_treino(equipe_casa, data_jogo, num_jogos_passados_media)
+            media_visitante = get_media_estatisticas_time_treino(equipe_visitante, data_jogo, num_jogos_passados_media)
         else:
-            media_casa = get_media_estatisticas_time_teste(equipe_casa, data_jogo)
-            media_visitante = get_media_estatisticas_time_teste(equipe_visitante, data_jogo)
+            media_casa = get_media_estatisticas_time_teste(equipe_casa, data_jogo, num_jogos_passados_media)
+            media_visitante = get_media_estatisticas_time_teste(equipe_visitante, data_jogo, num_jogos_passados_media)
         
         # Substitui as estatísticas brutas pelas médias calculadas
         jogo['estatisticas_casa'] = media_casa
