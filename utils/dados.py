@@ -1,12 +1,17 @@
+import os
+from dotenv import load_dotenv
 import mysql.connector
 import json
 
-# Configuração de conexão com o banco de dados
+# Carrega as variáveis de ambiente do arquivo .env
+load_dotenv()
+
+# Configuração de conexão com o banco de dados usando variáveis de ambiente
 db_config = {
-    'user': 'root',
-    'password': 'password',
-    'host': 'localhost',
-    'database': 'mydb'
+    'user': os.getenv('DB_USER'),
+    'password': os.getenv('DB_PASSWORD'),
+    'host': os.getenv('DB_HOST'),
+    'database': os.getenv('DB_DATABASE')
 }
 
 def get_all_jogos():
@@ -140,7 +145,7 @@ def get_jogos_temporada(ano):
         cursor.close()
         conn.close()
 
-def formatar_medias(jogos, isTreino, num_jogos_passados_media):
+def formatar_medias(jogos, isTreino, num_jogos_passados_media=10):
     jogos_nova = jogos
     for jogo in jogos_nova:
         equipe_casa = jogo['equipe_casa']

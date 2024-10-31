@@ -1,19 +1,21 @@
+import os
 import pandas as pd
 from dados import get_jogos_temporada
 from dados import formatar_medias
+
+os.environ['PROJECT_PATH'] = os.getcwd()
 
 import json
 from sklearn.preprocessing import MinMaxScaler
 
 def save_to_csv(data, filename):
+    directory = os.path.dirname(filename)
+    os.makedirs(directory, exist_ok=True)
     df = pd.DataFrame(data)
     df.to_csv(filename, index=False)
 
 def descompactar_estatisticas(jogos):
     dados_formatados = []
-
-    for jogo in jogos:
-        print('\n', jogo)
 
     for jogo in jogos:
         casa_estatisticas = jogo['estatisticas_casa']  # já é um dicionário
@@ -117,7 +119,16 @@ def normalizar_dados(dados):
     return df.to_dict(orient='records')
 
 
-def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5):
+def split_and_save_data(temporada, num_jogos_passados=None, porcentagem_treino=0.5):
+    project_path = os.environ['PROJECT_PATH']  # Recupera o caminho do projeto
+    
+    path_treino = os.path.join(
+        project_path, f'data/experimento_01/{temporada}/{porcentagem_treino}/treino.csv'
+    )
+    path_teste = os.path.join(
+        project_path, f'data/experimento_01/{temporada}/{porcentagem_treino}/teste.csv'
+    )
+
     # Obter todos os jogos da temporada
     jogos_treino = get_jogos_temporada(temporada)
     jogos_teste = get_jogos_temporada(temporada)
@@ -143,12 +154,21 @@ def split_and_save_data(temporada, quantidade_jogos=None, porcentagem_treino=0.5
     # teste = normalizar_dados(teste)
 
     # Salvar os conjuntos em arquivos CSV
-    save_to_csv(treino, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/treino.csv')
-    save_to_csv(teste, 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_01/2008-2009/0,9/teste.csv')
+    save_to_csv(treino, path_treino)
+    save_to_csv(teste, path_teste)
     print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
 
 # Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
-    temporada = '2008-2009'
-    split_and_save_data(temporada, porcentagem_treino=0.9)
+    temporadas = [
+        "2008-2009", "2009-2010", "2010-2011", "2011-2012", "2012-2013",
+        "2013-2014", "2014-2015", "2015-2016", "2016-2017", "2017-2018",
+        "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023", "2023-2024"
+    ]
     
+    porcentagens_treino = [0.2, 0.4, 0.5, 0.6, 0.8, 0.9]
+    
+    for temporada in temporadas:
+        for porcentagem in porcentagens_treino:
+            print(f"Processando temporada: {temporada} com porcentagem de treino: {porcentagem}")
+            split_and_save_data(temporada, porcentagem_treino=porcentagem)
