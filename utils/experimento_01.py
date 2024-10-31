@@ -158,7 +158,6 @@ def split_and_save_data(temporada, num_jogos_passados=None, porcentagem_treino=0
     save_to_csv(teste, path_teste)
     print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
 
-# Executar a divisão e salvar os arquivos
 if __name__ == "__main__":
     temporadas = [
         "2008-2009", "2009-2010", "2010-2011", "2011-2012", "2012-2013",
