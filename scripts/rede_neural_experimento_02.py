@@ -1,10 +1,8 @@
 import pandas as pd
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
-from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
-from sklearn.impute import SimpleImputer
+from sklearn.preprocessing import MinMaxScaler
+
 import os
 import re
 
@@ -38,7 +36,7 @@ def run_model(data_dir, temporada):
         treino_df = pd.read_csv(treino_path)
         teste_df = pd.read_csv(teste_path)
 
-        # Criar a coluna 'victory_casa' como variável alvo
+        # Criar uma coluna 'victory_casa' como variável alvo
         treino_df['victory_casa'] = treino_df['placar_casa'] > treino_df['placar_visitante']
         teste_df['victory_casa'] = teste_df['placar_casa'] > teste_df['placar_visitante']
 
@@ -49,30 +47,19 @@ def run_model(data_dir, temporada):
         X_test = teste_df.drop(['victory_casa'], axis=1)
         y_test = teste_df['victory_casa']
 
-        # Separar colunas numéricas e categóricas
+        # Manter apenas as colunas numéricas
         numeric_features = X_train.select_dtypes(include=['int64', 'float64']).columns
-        categorical_features = X_train.select_dtypes(include=['object']).columns
+        X_train = X_train[numeric_features]
+        X_test = X_test[numeric_features]
 
-        # Pré-processamento
-        preprocessor = ColumnTransformer(
-            transformers=[
-                ('num', Pipeline(steps=[
-                    ('imputer', SimpleImputer(strategy='median')),  # Preencher valores ausentes
-                    ('scaler', StandardScaler())  # Normalizar dados numéricos
-                ]), numeric_features),
-                ('cat', Pipeline(steps=[
-                    ('imputer', SimpleImputer(strategy='most_frequent')),  # Preencher valores ausentes
-                    ('onehot', OneHotEncoder(handle_unknown='ignore'))  # Codificar variáveis categóricas
-                ]), categorical_features)
-            ])
+        # Criar o escalador Min-Max
+        scaler = MinMaxScaler()
+        # Normalizar
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
 
-        # Criar o pipeline do modelo
-        model = Pipeline(steps=[
-            ('preprocessor', preprocessor),
-            ('classifier', MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=500, random_state=42))
-        ])
-
-        # Treinar o modelo com o conjunto de treino
+        # Criar e treinar o modelo
+        model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=1000, random_state=42)
         model.fit(X_train, y_train)
 
         # Fazer previsões com o conjunto de teste
@@ -95,9 +82,9 @@ if __name__ == '__main__':
                   '2023-2024'
                  ]
 
-    base_path = '/home/alunos/a2252805/experimentos-predi-o-nbb/data/experimento_02/'
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
     for temporada in temporadas:
-        data_dir = f'{base_path}{temporada}/8-1/'
+        data_dir = f'{base_path}/data/experimento_02/{temporada}/8-1/'
         run_model(data_dir, temporada)
 
