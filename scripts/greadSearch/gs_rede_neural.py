@@ -1,15 +1,16 @@
 import os
 import pandas as pd
-import numpy as np 
 from sklearn.neural_network import MLPClassifier
-from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import GridSearchCV
+from sklearn.metrics import accuracy_score
 
-def run_model(treino_path, teste_path):
+def run_grid_search(treino_path, teste_path):
+    # Carregar os dados
     treino_df = pd.read_csv(treino_path)
     teste_df = pd.read_csv(teste_path)
 
-    # Criar uma coluna 'victory_casa' como variável alvo
+    # Criar a coluna 'victory_casa' como variável alvo
     treino_df['victory_casa'] = treino_df['placar_casa'] > treino_df['placar_visitante']
     teste_df['victory_casa'] = teste_df['placar_casa'] > teste_df['placar_visitante']
 
@@ -25,24 +26,41 @@ def run_model(treino_path, teste_path):
     X_train = X_train[numeric_features]
     X_test = X_test[numeric_features]
 
-    # Criar o escalador Min-Max // Zscore não estava funcionando
+    # Normalizar os dados usando Min-Max Scaler
     scaler = MinMaxScaler()
-
-    # Normalizar
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    # Criar e treinar o modelo
-    model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42, activation='tanh', solver='sgd', learning_rate='constant')
-    model.fit(X_train, y_train)
+    # Definir os hiperparâmetros para o Grid Search
+    param_grid = {
+        'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
+        'activation': ['relu', 'tanh', 'logistic'],
+        'solver': ['adam', 'sgd'],
+        'learning_rate': ['constant', 'adaptive']
+    }
 
-    # Fazer previsões com o conjunto de teste
-    y_pred = model.predict(X_test)
+    # Criar o MLPClassifier
+    mlp = MLPClassifier(max_iter=1000, random_state=42)
 
-    # Avaliar o desempenho do modelo
+    # Configurar o Grid Search com validação cruzada
+    grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, cv=5, scoring='accuracy', verbose=2)
+
+    # Executar o Grid Search no conjunto de treino
+    grid_search.fit(X_train, y_train)
+
+    # Obter os melhores hiperparâmetros
+    best_params = grid_search.best_params_
+    print(f'Melhores hiperparâmetros: {best_params}')
+
+    # Avaliar o modelo com os melhores hiperparâmetros no conjunto de teste
+    best_model = grid_search.best_estimator_
+    y_pred = best_model.predict(X_test)
     accuracy = accuracy_score(y_test, y_pred)
-    print(f'Acurácia do modelo: {accuracy:.2f}')
-    return accuracy  # Retornar a acurácia em vez de imprimir
+    print(f'Acurácia do melhor modelo: {accuracy:.2f}')
+
+    return best_model, accuracy
+
+
 
 temporadas = [
     "2008-2009", "2009-2010", "2011-2012", "2012-2013",
@@ -52,7 +70,7 @@ temporadas = [
 
 porcentagens_treino = [0.2, 0.4, 0.5, 0.6, 0.8, 0.9]
 
-base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')) # caminho atual voltando 2 pastas
 
 # Dicionário para armazenar acurácias por porcentagem
 accuracies_dict = {porcentagem: [] for porcentagem in porcentagens_treino}
@@ -67,11 +85,8 @@ for porcentagem in porcentagens_treino:
 
         # Executar o modelo e armazenar a acurácia
         print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
-        accuracy = run_model(treino_path, teste_path)
+        best_model, accuracy = run_grid_search(treino_path, teste_path)
         accuracies_dict[porcentagem].append(accuracy)  # Adicionar a acurácia à lista correspondente
 
-# Calcular e exibir o desvio padrão para cada porcentagem
-for porcentagem, accuracies in accuracies_dict.items():
-    std_dev = np.std(accuracies)
-    mean_accuracy = np.mean(accuracies)  # Calcular a média das acurácias
-    print(f'Porcentagem de treino: {porcentagem}, Média da acurácia: {mean_accuracy:.2f}, Desvio padrão da acurácia: {std_dev:.2f}')
+        break
+    break
