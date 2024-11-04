@@ -25,8 +25,9 @@ def run_model(treino_path, teste_path):
     X_train = X_train[numeric_features]
     X_test = X_test[numeric_features]
 
-    # Criar o escalador Min-Max
+    # Criar o escalador Min-Max // Zscore não estava funcionando
     scaler = MinMaxScaler()
+
     # Normalizar
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
