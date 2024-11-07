@@ -1,4 +1,5 @@
 import os
+import time
 import pandas as pd
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import MinMaxScaler
@@ -75,6 +76,10 @@ base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 # Dicionário para armazenar acurácias por porcentagem
 accuracies_dict = {porcentagem: [] for porcentagem in porcentagens_treino}
 
+
+# Início do temporizador
+start_time = time.time()
+
 for porcentagem in porcentagens_treino:
     for temporada in temporadas:
         porcentagem_str = str(porcentagem)
@@ -90,3 +95,7 @@ for porcentagem in porcentagens_treino:
 
         break
     break
+
+# Fim do temporizador
+end_time = time.time()
+print(f"Tempo total de execução: {end_time - start_time:.2f} segundos")

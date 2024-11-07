@@ -1,9 +1,11 @@
 import os
+import time
 import pandas as pd
-import numpy as np 
+import numpy as np
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import GridSearchCV
 
 def run_model(treino_path, teste_path):
     treino_df = pd.read_csv(treino_path)
@@ -32,8 +34,34 @@ def run_model(treino_path, teste_path):
     X_train = scaler.fit_transform(X_train)
     X_test = scaler.transform(X_test)
 
-    # Criar e treinar o modelo
-    model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42, activation='tanh', solver='sgd', learning_rate='constant')
+    # Definir os hiperparâmetros para o Grid Search
+    param_grid = {
+        'max_iter':[10000],
+        'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
+        'activation': ['relu', 'tanh', 'logistic'],
+        'solver': ['adam', 'sgd'],
+        'learning_rate': ['constant', 'adaptive']
+    }
+
+    # Criar o MLPClassifier
+    mlp = MLPClassifier(max_iter=10000, random_state=42)
+
+    # Configurar o Grid Search com validação cruzada
+    grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, cv=5, scoring='accuracy', verbose=2)
+
+    # Executar o Grid Search no conjunto de treino
+    grid_search.fit(X_train, y_train)
+    best_params = grid_search.best_params_
+
+    # Criar e treinar o modelo com os melhores hiperparâmetros
+    model = MLPClassifier(
+        hidden_layer_sizes=best_params['hidden_layer_sizes'],
+        activation=best_params['activation'],
+        solver=best_params['solver'],
+        learning_rate=best_params['learning_rate'],
+        max_iter=10000,
+        random_state=42
+    )
     model.fit(X_train, y_train)
 
     # Fazer previsões com o conjunto de teste
@@ -41,7 +69,6 @@ def run_model(treino_path, teste_path):
 
     # Avaliar o desempenho do modelo
     accuracy = accuracy_score(y_test, y_pred)
-    print(f'Acurácia do modelo: {accuracy:.2f}')
     return accuracy  # Retornar a acurácia em vez de imprimir
 
 temporadas = [
@@ -54,10 +81,19 @@ porcentagens_treino = [0.2, 0.4, 0.5, 0.6, 0.8, 0.9]
 
 base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
-# Dicionário para armazenar acurácias por porcentagem
-accuracies_dict = {porcentagem: [] for porcentagem in porcentagens_treino}
+# Lista para armazenar resultados
+results = []
+
+
+
+
+
+# Início do temporizador
+start_time = time.time()
 
 for porcentagem in porcentagens_treino:
+    acuracias_por_porcentagem = []  # Para calcular a média e o desvio padrão dessa porcentagem
+
     for temporada in temporadas:
         porcentagem_str = str(porcentagem)
 
@@ -68,10 +104,33 @@ for porcentagem in porcentagens_treino:
         # Executar o modelo e armazenar a acurácia
         print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
         accuracy = run_model(treino_path, teste_path)
-        accuracies_dict[porcentagem].append(accuracy)  # Adicionar a acurácia à lista correspondente
+        acuracias_por_porcentagem.append(accuracy)
 
-# Calcular e exibir o desvio padrão para cada porcentagem
-for porcentagem, accuracies in accuracies_dict.items():
-    std_dev = np.std(accuracies)
-    mean_accuracy = np.mean(accuracies)  # Calcular a média das acurácias
-    print(f'Porcentagem de treino: {porcentagem}, Média da acurácia: {mean_accuracy:.2f}, Desvio padrão da acurácia: {std_dev:.2f}')
+        # Adicionar os resultados ao DataFrame
+        results.append({
+            'Temporada': temporada,
+            'Porcentagem de Treino': porcentagem,
+            'Acurácia': accuracy
+        })
+
+    # Calcular e adicionar a média e o desvio padrão ao final de cada porcentagem
+    mean_accuracy = np.mean(acuracias_por_porcentagem)
+    std_dev = np.std(acuracias_por_porcentagem)
+    results.append({
+        'Temporada': 'Média/Desvio Padrão',
+        'Porcentagem de Treino': porcentagem,
+        'Acurácia': f'Média: {mean_accuracy:.2f}, Desvio Padrão: {std_dev:.2f}'
+    })
+
+# Criar um DataFrame a partir dos resultados
+results_df = pd.DataFrame(results)
+
+# Salvar os resultados em um arquivo CSV
+output_path = os.path.join(base_path, 'resultados_acuracias.csv')
+results_df.to_csv(output_path, index=False)
+
+print(f'Resultados salvos em {output_path}')
+
+# Fim do temporizador
+end_time = time.time()
+print(f"Tempo total de execução: {end_time - start_time:.2f} segundos")
