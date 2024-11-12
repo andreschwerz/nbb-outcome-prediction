@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 import mysql.connector
 import json
+import time
 
 # Carrega as variáveis de ambiente do arquivo .env
 load_dotenv()
@@ -134,6 +135,7 @@ def get_media_estatisticas_time_treino(equipe, data_jogo, num_jogos_passados_med
         conn.close()
 
 def get_jogos_temporada(ano):
+    time.sleep(2)
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)

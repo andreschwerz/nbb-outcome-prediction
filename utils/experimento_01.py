@@ -119,14 +119,14 @@ def normalizar_dados(dados):
     return df.to_dict(orient='records')
 
 
-def split_and_save_data(temporada, num_jogos_passados=None, porcentagem_treino=0.5):
+def split_and_save_data(temporada, num_jogos_passados=15, porcentagem_treino=0.5):
     project_path = os.environ['PROJECT_PATH']  # Recupera o caminho do projeto
     
     path_treino = os.path.join(
-        project_path, f'data/experimento_01/{temporada}/{porcentagem_treino}/treino.csv'
+        project_path, f'data/experimento_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/treino.csv'
     )
     path_teste = os.path.join(
-        project_path, f'data/experimento_01/{temporada}/{porcentagem_treino}/teste.csv'
+        project_path, f'data/experimento_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/teste.csv'
     )
 
     # Obter todos os jogos da temporada
@@ -134,9 +134,9 @@ def split_and_save_data(temporada, num_jogos_passados=None, porcentagem_treino=0
     jogos_teste = get_jogos_temporada(temporada)
 
     # Formatar jogos para treino
-    jogos_treino = formatar_medias(jogos_treino, True)
+    jogos_treino = formatar_medias(jogos_treino, True, num_jogos_passados)
     # Formatar jogos para teste
-    jogos_teste = formatar_medias(jogos_teste, False)
+    jogos_teste = formatar_medias(jogos_teste, False, num_jogos_passados)
     
     # Descompactar estatísticas
     jogos_formatados_treino = descompactar_estatisticas(jogos_treino)
