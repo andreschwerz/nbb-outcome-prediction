@@ -166,7 +166,11 @@ if __name__ == '__main__':
             results_df = pd.DataFrame(results)
 
             # Salvar os resultados em um arquivo CSV
-            output_path = os.path.join(base_path, 'experimento_02', f'{numero_jogos_treino}-{numero_jogos_teste}.csv')
+            output_dir = os.path.join(base_path, 'results', 'experimento_02')
+            os.makedirs(output_dir, exist_ok=True)
+
+            # Salvar os resultados em um arquivo CSV
+            output_path = os.path.join(output_dir, f'{numero_jogos_treino}-{numero_jogos_teste}.csv')
             results_df.to_csv(output_path, index=False)
 
     # Fim do temporizador
