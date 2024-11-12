@@ -88,7 +88,7 @@ def descompactar_estatisticas(jogos):
         dados_formatados.append(dados)
     return dados_formatados
 
-def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True, num_jogos_passados_media=8):
+def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True, num_jogos_passados_media=10):
     if filtrarPorTemporada:
         jogos_treino = get_jogos_temporada(temporada)
         jogos_teste = get_jogos_temporada(temporada)
@@ -114,7 +114,8 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         teste_formatado = descompactar_estatisticas(teste)
 
         if filtrarPorTemporada:
-            final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+            final_path = os.path.join(base_path, 'data', 'experimento_02', temporada, f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
+            # final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
         else:
             final_path = base_path + 'all/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
         
@@ -127,7 +128,7 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
         print(f'Arquivos temporada - {temporada} - treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
 
-        indice += qtd_jogos_treino + qtd_jogos_teste
+        indice += qtd_jogos_teste
         num_arquivo += 1
 
 if __name__ == "__main__":
@@ -140,15 +141,16 @@ if __name__ == "__main__":
                  ]
     
     filtrarPorTemporada = True
-    qtd_jogos_treino = 8
-    qtd_jogos_teste = 1
 
-    # base_path = 'C:/Users/rafae/OneDrive/Área de Trabalho/TCC/experimentos/experimentos-predi-o-nbb/data/experimento_02/'
-    base_path = '/home/alunos/a2252805/experimentos-predi-o-nbb/data/experimento_02/'
+    qtds_jogos_treino = [8,16,32,64,128]
+    qtds_jogos_teste = [1,2,3,4]
+
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
-    num_jogos_passados_media = 8
+    num_jogos_passados_media = 10
 
     # Loop através de todas as temporadas
-    # for temporada in temporadas:
-    temporada = '2019-2020'
-    gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada, num_jogos_passados_media)
+    for temporada in temporadas:
+        for qtd_jogos_treino in qtds_jogos_treino:
+            for qtd_jogos_teste in qtds_jogos_teste:
+                gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada, num_jogos_passados_media)
