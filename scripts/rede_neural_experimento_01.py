@@ -7,6 +7,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import GridSearchCV
 
+
 def read_dados(treino_path, teste_path):
     treino_df = pd.read_csv(treino_path)
     teste_df = pd.read_csv(teste_path)
@@ -61,17 +62,19 @@ def get_hyper_params_rede_neural(X_train, y_train):
 def run_model(treino_path, teste_path):
     X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
 
-    best_params = get_hyper_params_rede_neural(X_train, y_train)    
+    # best_params = get_hyper_params_rede_neural(X_train, y_train)    
 
-    # Criar e treinar o modelo com os melhores hiperparâmetros
-    model = MLPClassifier(
-        hidden_layer_sizes=best_params['hidden_layer_sizes'],
-        activation=best_params['activation'],
-        solver=best_params['solver'],
-        learning_rate=best_params['learning_rate'],
-        max_iter=10000,
-        random_state=42
-    )
+    # # Criar e treinar o modelo com os melhores hiperparâmetros
+    # model = MLPClassifier(
+    #     hidden_layer_sizes=best_params['hidden_layer_sizes'],
+    #     activation=best_params['activation'],
+    #     solver=best_params['solver'],
+    #     learning_rate=best_params['learning_rate'],
+    #     max_iter=10000,
+    #     random_state=42
+    # )
+
+    model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
 
     # Treinar modelo
     model.fit(X_train, y_train)
@@ -140,6 +143,14 @@ for porcentagem in porcentagens_treino:
         'Acurácia': f'Média: {mean_accuracy:.2f}, Desvio Padrão: {std_dev:.2f}'
     })
 
+# Criar um DataFrame a partir dos resultados
+results_df = pd.DataFrame(results)
+
+# Salvar os resultados em um arquivo CSV
+output_path = os.path.join(base_path, 'resultados_acuracias.csv')
+results_df.to_csv(output_path, index=False)
+
+print(f'Resultados salvos em {output_path}')
 
 # Fim do temporizador
 end_time = time.time()
