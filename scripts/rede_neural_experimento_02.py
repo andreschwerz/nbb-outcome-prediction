@@ -52,7 +52,7 @@ def get_hyper_params_rede_neural(X_train, y_train):
     mlp = MLPClassifier(max_iter=10000, random_state=42)
 
     # Configurar o Grid Search com validação cruzada
-    grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, cv=5, scoring='accuracy', verbose=2)
+    grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, cv=2, scoring='accuracy', verbose=2)
 
     # Executar o Grid Search no conjunto de treino
     grid_search.fit(X_train, y_train)
@@ -68,20 +68,20 @@ def extract_number(file_name):
 def run_model(treino_path, teste_path):
     X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
 
-    # best_params = get_hyper_params_rede_neural(X_train, y_train)    
+    best_params = get_hyper_params_rede_neural(X_train, y_train)    
 
-    # Criar e treinar o modelo com os melhores hiperparâmetros
-    # model = MLPClassifier(
-    #     hidden_layer_sizes=best_params['hidden_layer_sizes'],
-    #     activation=best_params['activation'],
-    #     solver=best_params['solver'],
-    #     learning_rate=best_params['learning_rate'],
-    #     max_iter=10000,
-    #     random_state=42
-    # )
+    #Criar e treinar o modelo com os melhores hiperparâmetros
+    model = MLPClassifier(
+        hidden_layer_sizes=best_params['hidden_layer_sizes'],
+        activation=best_params['activation'],
+        solver=best_params['solver'],
+        learning_rate=best_params['learning_rate'],
+        max_iter=10000,
+        random_state=42
+    )
 
     # Criar e treinar o modelo
-    model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=1000, random_state=42)
+    # model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=1000, random_state=42)
     model.fit(X_train, y_train)
 
     # Fazer previsões com o conjunto de teste
@@ -166,12 +166,13 @@ if __name__ == '__main__':
             results_df = pd.DataFrame(results)
 
             # Salvar os resultados em um arquivo CSV
-            output_dir = os.path.join(base_path, 'results', 'experimento_02')
+            output_dir = os.path.join(base_path, 'results', 'experimento_02_gridsearch')
             os.makedirs(output_dir, exist_ok=True)
 
             # Salvar os resultados em um arquivo CSV
             output_path = os.path.join(output_dir, f'{numero_jogos_treino}-{numero_jogos_teste}.csv')
             results_df.to_csv(output_path, index=False)
+            results = []
 
     # Fim do temporizador
     end_time_all = time.time()
