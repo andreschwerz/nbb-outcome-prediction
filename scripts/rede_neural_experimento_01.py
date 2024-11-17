@@ -62,19 +62,19 @@ def get_hyper_params_rede_neural(X_train, y_train):
 def run_model(treino_path, teste_path):
     X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
 
-    # best_params = get_hyper_params_rede_neural(X_train, y_train)    
+    best_params = get_hyper_params_rede_neural(X_train, y_train)    
 
-    # # Criar e treinar o modelo com os melhores hiperparâmetros
-    # model = MLPClassifier(
-    #     hidden_layer_sizes=best_params['hidden_layer_sizes'],
-    #     activation=best_params['activation'],
-    #     solver=best_params['solver'],
-    #     learning_rate=best_params['learning_rate'],
-    #     max_iter=10000,
-    #     random_state=42
-    # )
+    # Criar e treinar o modelo com os melhores hiperparâmetros
+    model = MLPClassifier(
+        hidden_layer_sizes=best_params['hidden_layer_sizes'],
+        activation=best_params['activation'],
+        solver=best_params['solver'],
+        learning_rate=best_params['learning_rate'],
+        max_iter=10000,
+        random_state=42
+    )
 
-    model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
+    # model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
 
     # Treinar modelo
     model.fit(X_train, y_train)
@@ -119,8 +119,8 @@ for porcentagem in porcentagens_treino:
         porcentagem_str = str(porcentagem)
 
         # Construir os caminhos de treino e teste usando os.path
-        treino_path = os.path.join(base_path, "data", "experimento_01", temporada, porcentagem_str, "treino.csv")
-        teste_path = os.path.join(base_path, "data", "experimento_01", temporada, porcentagem_str, "teste.csv")
+        treino_path = os.path.join(base_path, "data", "experimento_01", "15", temporada, porcentagem_str, "treino.csv")
+        teste_path = os.path.join(base_path, "data", "experimento_01", "15", temporada, porcentagem_str, "teste.csv")
 
         # Executar o modelo e armazenar a acurácia
         print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
@@ -147,7 +147,7 @@ for porcentagem in porcentagens_treino:
 results_df = pd.DataFrame(results)
 
 # Salvar os resultados em um arquivo CSV
-output_path = os.path.join(base_path, 'resultados_acuracias.csv')
+output_path = os.path.join(base_path, 'rede_neural_experimento_01_15_media.csv')
 results_df.to_csv(output_path, index=False)
 
 print(f'Resultados salvos em {output_path}')
