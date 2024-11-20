@@ -7,6 +7,7 @@ import numpy as np
 from rede_neural import run_model_rede_neural
 from experimentos import save_results_csv
 
+bests_params = []
 
 def extract_number(file_name):
     # Extrai o número do nome do arquivo.
@@ -35,8 +36,9 @@ def run_models(data_dir):
         treino_path = os.path.join(data_dir, treino_file)
         teste_path = os.path.join(data_dir, teste_file)
 
-        acuracia, f1, best_params = run_model_rede_neural(treino_path, teste_path, False)
+        acuracia, f1, best_params = run_model_rede_neural(treino_path, teste_path, True)
 
+        bests_params.append(best_params)
         acuracias_from_temporada.append(acuracia)
         f1_scores_from_temporada.append(f1)
     
@@ -80,6 +82,15 @@ if __name__ == '__main__':
                 
                 acuracias_temporadas.append(acuracia_from_temporada)
                 f1_scores_temporadas.append(f1_score_from_temporada)
+
+                results.append({
+                    'Janela Flutuante': f'{numero_jogos_treino}'+'-'+f'{numero_jogos_teste}',
+                    'Temporada': temporada,
+                    'Acurácia': acuracia_from_temporada,
+                    'Desvio Padrão Acurácia': '-',
+                    'F1-Score': f1_score_from_temporada,
+                    'Desvio Padrão F1-Score': '-',
+                })
             
             # Calcular e adicionar a média e o desvio daquela janela para todas as temporadas
             media_acuracia = np.mean(acuracias_temporadas)
@@ -90,15 +101,16 @@ if __name__ == '__main__':
 
             results.append({
                 'Janela Flutuante': f'{numero_jogos_treino}'+'-'+f'{numero_jogos_teste}',
+                'Temporada': '-',
                 'Acurácia': f'{media_acuracia:.2f}',
                 'Desvio Padrão Acurácia': f'{desvio_padrao_acuracia:.2f}',
                 'F1-Score': f'{media_f1_score:.2f}',
                 'Desvio Padrão F1-Score': f'{desvio_padrao_f1_score:.2f}',
             })
 
-    output_dir = os.path.join(base_path, 'results', 'experimento_02')
-    output_path = os.path.join(output_dir, 'rede_neural_experimento_02.csv')
-    save_results_csv(output_path, results)
+            output_dir = os.path.join(base_path, 'results', 'experimento_02')
+            output_path = os.path.join(output_dir, 'rede_neural_experimento_02.csv')
+            save_results_csv(output_path, results)
 
     # Fim do temporizador
     end_time_all = time.time()

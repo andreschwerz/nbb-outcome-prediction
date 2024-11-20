@@ -52,6 +52,15 @@ for porcentagem in porcentagens_treino:
         acuracias_por_porcentagem.append(accuracy)
         f1_scores_por_porcentagem.append(f1)
 
+        results.append({
+            'Porcentagem de Treino': porcentagem,
+            'Temporada': temporada,
+            'Acurácia': accuracy,
+            'Desvio Padrão Acurácia': '-',
+            'F1-Score': f1,
+            'Desvio Padrão F1-Score': '-',
+        })
+
     # Calcular e adicionar a média e o desvio padrão ao final de cada porcentagem
     media_acuracia = np.mean(acuracias_por_porcentagem)
     media_f1_score = np.mean(f1_scores_por_porcentagem)
@@ -61,6 +70,7 @@ for porcentagem in porcentagens_treino:
 
     results.append({
         'Porcentagem de Treino': porcentagem,
+        'Temporada': '-',
         'Acurácia': f'{media_acuracia:.2f}',
         'Desvio Padrão Acurácia': f'{desvio_padrao_acuracia:.2f}',
         'F1-Score': f'{media_f1_score:.2f}',
