@@ -38,21 +38,23 @@ def run_model_rede_neural(treino_path, teste_path, useGridSearch=True):
     X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
 
     if (useGridSearch):
-        best_params = get_hyper_params_rede_neural(X_train, y_train)    
+        # best_params = get_hyper_params_rede_neural(X_train, y_train)
 
         # Criar e treinar o modelo com os melhores hiperparâmetros
         model = MLPClassifier(
-            hidden_layer_sizes=best_params['hidden_layer_sizes'],
-            activation=best_params['activation'],
-            solver=best_params['solver'],
-            learning_rate=best_params['learning_rate'],
-            max_iter=10000,
+            hidden_layer_sizes=(100, 100),
+            activation='relu',
+            solver='adam',
+            learning_rate='adaptive',
+            max_iter=1000,
             random_state=42
         )
+
     else:
-        best_params = []
         model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
 
+    best_params = []
+    
     # Treinar modelo
     model.fit(X_train, y_train)
 

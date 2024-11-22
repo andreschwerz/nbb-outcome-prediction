@@ -32,7 +32,7 @@ def run_models(data_dir):
 
     # Loop pelos arquivos de treino e teste
     for treino_file, teste_file in zip(treino_files, teste_files):
-        
+
         treino_path = os.path.join(data_dir, treino_file)
         teste_path = os.path.join(data_dir, teste_file)
 
@@ -86,9 +86,9 @@ if __name__ == '__main__':
                 results.append({
                     'Janela Flutuante': f'{numero_jogos_treino}'+'-'+f'{numero_jogos_teste}',
                     'Temporada': temporada,
-                    'Acurácia': acuracia_from_temporada,
+                    'Acurácia': f'{acuracia_from_temporada:.2f}',
                     'Desvio Padrão Acurácia': '-',
-                    'F1-Score': f1_score_from_temporada,
+                    'F1-Score': f'{f1_score_from_temporada:.2f}',
                     'Desvio Padrão F1-Score': '-',
                 })
             
