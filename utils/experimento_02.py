@@ -126,20 +126,26 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         save_to_csv(treino_formatado, f'{temporada_path}/treino_{num_arquivo}.csv')
         save_to_csv(teste_formatado, f'{temporada_path}/teste_{num_arquivo}.csv')
 
-        print(f'Arquivos temporada - {temporada} - treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
-
         indice += 1
         num_arquivo += 1
 
 if __name__ == "__main__":
 
-    temporadas = ['2008-2009', '2009-2010', '2011-2012',
-                  '2012-2013', '2013-2014', '2014-2015',
+    temporadas = ['2013-2014', '2014-2015',
                   '2015-2016', '2016-2017', '2019-2020',
                   '2018-2019', '2020-2021', '2021-2022',
                   '2022-2023', '2023-2024'
                  ]
     
+    # temporadas = ['2008-2009', '2009-2010', '2011-2012',
+    #             '2012-2013', '2013-2014', '2014-2015',
+    #             '2015-2016', '2016-2017', '2019-2020',
+    #             '2018-2019', '2020-2021', '2021-2022',
+    #             '2022-2023', '2023-2024'
+    #             ]
+
+    # temporadas = ['2012-2013']
+
     filtrarPorTemporada = True
 
     qtds_jogos_treino = [16,32,64,128]
@@ -154,3 +160,5 @@ if __name__ == "__main__":
         for qtd_jogos_treino in qtds_jogos_treino:
             for qtd_jogos_teste in qtds_jogos_teste:
                 gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada, num_jogos_passados_media)
+                print(f'Arquivos - {temporada} - {qtd_jogos_treino}-{qtd_jogos_teste}')
+

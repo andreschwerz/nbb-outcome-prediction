@@ -16,7 +16,8 @@ db_config = {
 }
 
 def get_all_jogos():
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos ORDER BY data"
@@ -28,7 +29,8 @@ def get_all_jogos():
         conn.close()
 
 def get_jogos_equipe(equipe):
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos WHERE equipe_casa = %s OR equipe_visitante = %s ORDER BY data"
@@ -40,7 +42,8 @@ def get_jogos_equipe(equipe):
         conn.close()
 
 def get_jogos_equipe_casa(equipe):
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos WHERE equipe_casa = %s ORDER BY data"
@@ -52,7 +55,8 @@ def get_jogos_equipe_casa(equipe):
         conn.close()
 
 def get_jogos_equipe_visitante(equipe):
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos WHERE equipe_visitante = %s ORDER BY data"
@@ -93,7 +97,8 @@ def calcular_media_estatisticas(jogos, equipe, num_jogos_passados_media=8):
     return total_estatisticas
 
 def get_media_estatisticas_time_teste(equipe, data_jogo, num_jogos_passados_media=8):
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         # Seleciona todos os jogos anteriores ao jogo especificado
@@ -114,6 +119,7 @@ def get_media_estatisticas_time_teste(equipe, data_jogo, num_jogos_passados_medi
         conn.close()
 
 def get_media_estatisticas_time_treino(equipe, data_jogo, num_jogos_passados_media=8):
+    time.sleep(0.005)
     conn = mysql.connector.connect(**db_config)
     try:
         cursor = conn.cursor(dictionary=True)
@@ -135,8 +141,8 @@ def get_media_estatisticas_time_treino(equipe, data_jogo, num_jogos_passados_med
         conn.close()
 
 def get_jogos_temporada(ano):
-    time.sleep(2)
-    conn = mysql.connector.connect(**db_config)
+    time.sleep(0.005)
+    conn = mysql.connector.connect(**db_config)    
     try:
         cursor = conn.cursor(dictionary=True)
         query = "SELECT * FROM jogos WHERE ano = %s ORDER BY data"
