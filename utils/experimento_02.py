@@ -133,17 +133,17 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
 if __name__ == "__main__":
 
-    temporadas = ['2008-2009',
-                #   '2012-2013', '2013-2014', '2014-2015',
-                #   '2015-2016', '2016-2017', '2017-2018', '2019-2020'
-                #   '2018-2019', '2020-2021', '2021-2022',
-                #   '2022-2023', '2023-2024'
+    temporadas = ['2008-2009', '2009-2010', '2011-2012',
+                  '2012-2013', '2013-2014', '2014-2015',
+                  '2015-2016', '2016-2017', '2019-2020',
+                  '2018-2019', '2020-2021', '2021-2022',
+                  '2022-2023', '2023-2024'
                  ]
     
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [8,16,32,64,128]
-    qtds_jogos_teste = [2,3,4]
+    qtds_jogos_treino = [16,32,64,128]
+    qtds_jogos_teste = [6,8]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
