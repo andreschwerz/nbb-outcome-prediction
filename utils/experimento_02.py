@@ -128,12 +128,12 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
         print(f'Arquivos temporada - {temporada} - treino_{num_arquivo}.csv e teste_{num_arquivo}.csv foram criados com sucesso.')
 
-        indice += qtd_jogos_teste
+        indice += 1
         num_arquivo += 1
 
 if __name__ == "__main__":
 
-    temporadas = ['2023-2024',
+    temporadas = ['2022-2023',
                 #   '2012-2013', '2013-2014', '2014-2015',
                 #   '2015-2016', '2016-2017', '2017-2018', '2019-2020'
                 #   '2018-2019', '2020-2021', '2021-2022',
@@ -142,8 +142,8 @@ if __name__ == "__main__":
     
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [64,128]
-    qtds_jogos_teste = [1,2,3,4]
+    qtds_jogos_treino = [8,16,32,64,128]
+    qtds_jogos_teste = [2,3,4]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
