@@ -61,8 +61,8 @@ if __name__ == '__main__':
                   '2023-2024'
                  ]
     
-    numeros_jogos_treino = [8]
-    numeros_jogos_teste = [1,2,3,4]
+    numeros_jogos_treino = [16]
+    numeros_jogos_teste = [1,2,3,4,6,8]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -109,7 +109,7 @@ if __name__ == '__main__':
             })
 
             output_dir = os.path.join(base_path, 'results', 'experimento_02')
-            output_path = os.path.join(output_dir, 'rede_neural_experimento_02.csv')
+            output_path = os.path.join(output_dir, 'rede_neural_experimento_02_treino_16.csv')
             save_results_csv(output_path, results)
 
     # Fim do temporizador
