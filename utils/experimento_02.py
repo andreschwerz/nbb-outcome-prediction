@@ -148,8 +148,8 @@ if __name__ == "__main__":
 
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [32,64,128]
-    qtds_jogos_teste = [16]
+    qtds_jogos_treino = [64,128]
+    qtds_jogos_teste = [32]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
