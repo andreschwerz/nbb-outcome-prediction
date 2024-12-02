@@ -61,8 +61,8 @@ if __name__ == '__main__':
                   '2023-2024'
                  ]
     
-    numeros_jogos_treino = [16]
-    numeros_jogos_teste = [1,2,3,4,6,8]
+    numeros_jogos_treino = [32]
+    numeros_jogos_teste = [1,2,3,4,6,8,16]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
