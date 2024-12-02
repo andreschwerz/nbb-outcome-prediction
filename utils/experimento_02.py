@@ -133,7 +133,7 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
 if __name__ == "__main__":
 
-    temporadas = ['2022-2023',
+    temporadas = ['2020-2021',
                 #   '2012-2013', '2013-2014', '2014-2015',
                 #   '2015-2016', '2016-2017', '2017-2018', '2019-2020'
                 #   '2018-2019', '2020-2021', '2021-2022',
