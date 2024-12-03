@@ -4,12 +4,14 @@ import pandas as pd
 import numpy as np
 
 from rede_neural import run_model_rede_neural
+from vanilla import run_model_vanilla
+from svm import run_model_svm 
+
+
 from experimentos import save_results_csv
 
-from vanilla import run_model_vanilla
-
-# vanilla, rede_neural
-modelo = 'rede_neural'
+# vanilla, rede_neural, svm
+modelo = 'svm'
 
 temporadas = [
     "2008-2009", "2009-2010", "2011-2012", "2012-2013",
@@ -42,12 +44,17 @@ for porcentagem in porcentagens_treino:
 
         # Executar o modelo e armazenar a acurácia
         print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
+
         if(modelo == 'rede_neural'):
             accuracy, f1, best_params = run_model_rede_neural(treino_path, teste_path, True)
+
         elif(modelo == 'vanilla'):
             accuracy, f1, best_params = run_model_vanilla(treino_path, teste_path)
 
-        bests_params.append(best_params)
+        elif modelo == 'svm':
+            accuracy, f1, best_params = run_model_svm(treino_path, teste_path, True)
+
+        # bests_params.append(best_params)
 
         acuracias_por_porcentagem.append(accuracy)
         f1_scores_por_porcentagem.append(f1)
@@ -55,9 +62,9 @@ for porcentagem in porcentagens_treino:
         results.append({
             'Porcentagem de Treino': porcentagem,
             'Temporada': temporada,
-            'Acurácia': accuracy,
+            'Acurácia': f'{accuracy:.2f}',
             'Desvio Padrão Acurácia': '-',
-            'F1-Score': f1,
+            'F1-Score': f'{f1:.2f}',
             'Desvio Padrão F1-Score': '-',
         })
 
@@ -83,9 +90,3 @@ for porcentagem in porcentagens_treino:
 # Fim do temporizador
 end_time = time.time()
 print(f"Tempo total de execução: {end_time - start_time:.2f} segundos")
-
-# Converter a lista de dicionários em um DataFrame
-df_bests_params = pd.DataFrame(bests_params)
-
-# Visualizar as primeiras linhas do DataFrame
-print(df_bests_params)
