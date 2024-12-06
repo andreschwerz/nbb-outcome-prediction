@@ -6,12 +6,14 @@ import numpy as np
 from rede_neural import run_model_rede_neural
 from vanilla import run_model_vanilla
 from svm import run_model_svm 
+from random_forest import run_model_rf
+from naive_bayes import run_model_naive_bayes
 
 
 from experimentos import save_results_csv
 
-# vanilla, rede_neural, svm
-modelo = 'svm'
+# vanilla, rede_neural, svm, random_forest, naive_bayes
+modelo = 'naive_bayes'
 
 temporadas = [
     "2008-2009", "2009-2010", "2011-2012", "2012-2013",
@@ -32,7 +34,7 @@ bests_params = []
 start_time = time.time()
 
 for porcentagem in porcentagens_treino:
-    acuracias_por_porcentagem = []  # Para calcular a média e o desvio padrão dessa porcentagem
+    acuracias_por_porcentagem = []
     f1_scores_por_porcentagem = []
 
     for temporada in temporadas:
@@ -53,6 +55,14 @@ for porcentagem in porcentagens_treino:
 
         elif modelo == 'svm':
             accuracy, f1, best_params = run_model_svm(treino_path, teste_path, True)
+
+        elif modelo == 'random_forest':
+            accuracy, f1, best_params = run_model_rf(treino_path, teste_path, True)
+
+        elif modelo == 'naive_bayes':
+            accuracy, f1, best_params = run_model_naive_bayes(treino_path, teste_path)
+
+
 
         # bests_params.append(best_params)
 
