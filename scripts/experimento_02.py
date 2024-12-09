@@ -5,7 +5,10 @@ import re
 import numpy as np
 
 from rede_neural import run_model_rede_neural
+from svm import run_model_svm 
 from experimentos import save_results_csv
+
+modelo = 'svm'
 
 bests_params = []
 
@@ -36,7 +39,7 @@ def run_models(data_dir):
         treino_path = os.path.join(data_dir, treino_file)
         teste_path = os.path.join(data_dir, teste_file)
 
-        acuracia, f1, best_params = run_model_rede_neural(treino_path, teste_path, True)
+        acuracia, f1, best_params = run_model_svm(treino_path, teste_path, True)
 
         bests_params.append(best_params)
         acuracias_from_temporada.append(acuracia)
@@ -61,8 +64,8 @@ if __name__ == '__main__':
                   '2023-2024'
                  ]
     
-    numeros_jogos_treino = [64]
-    numeros_jogos_teste = [1,2,3,4,6,8,16,32]
+    numeros_jogos_treino = [8]
+    numeros_jogos_teste = [1,2,3,4]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 
@@ -109,7 +112,7 @@ if __name__ == '__main__':
             })
 
             output_dir = os.path.join(base_path, 'results', 'experimento_02')
-            output_path = os.path.join(output_dir, 'rede_neural_experimento_02_treino_64.csv')
+            output_path = os.path.join(output_dir, f'{modelo}_experimento_02_treino_{numero_jogos_treino}.csv')
             save_results_csv(output_path, results)
 
     # Fim do temporizador
