@@ -8,7 +8,7 @@ def get_hyper_params_rf(X_train, y_train):
     # Definir os hiperparâmetros para o Grid Search
     param_grid = {
         'n_estimators': [50, 100, 200],  # Número de árvores na floresta
-        'max_depth': [None, 10, 20],  # Profundidade máxima da árvore
+        'max_depth': [None, 10, 20, 50],  # Profundidade máxima da árvore
         'min_samples_split': [2, 5, 10],  # Número mínimo de amostras para dividir um nó
         'min_samples_leaf': [1, 2, 4],  # Número mínimo de amostras em uma folha
         'bootstrap': [True, False]  # Método de amostragem
@@ -18,7 +18,7 @@ def get_hyper_params_rf(X_train, y_train):
     rf = RandomForestClassifier(random_state=42)
 
     # Configurar o Grid Search com validação cruzada
-    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=2, scoring='accuracy', verbose=2)
+    grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=2, scoring='f1_weighted', verbose=2)
 
     # Executar o Grid Search no conjunto de treino
     grid_search.fit(X_train, y_train)

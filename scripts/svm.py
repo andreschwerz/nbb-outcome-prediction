@@ -17,7 +17,7 @@ def get_hyper_params_svm(X_train, y_train):
     svm = SVC(random_state=42)
 
     # Configurar o Grid Search com validação cruzada
-    grid_search = GridSearchCV(estimator=svm, param_grid=param_grid, cv=2, scoring='accuracy', verbose=2)
+    grid_search = GridSearchCV(estimator=svm, param_grid=param_grid, cv=2, scoring='f1_weighted', verbose=2)
 
     # Executar o Grid Search no conjunto de treino
     grid_search.fit(X_train, y_train)
