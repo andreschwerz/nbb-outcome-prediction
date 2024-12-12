@@ -6,21 +6,21 @@ from experimentos import read_dados
 
 def get_hyper_params_rede_neural(X_train, y_train):
     # Definir os hiperparâmetros para o Grid Search
-    param_grid = {
-        'max_iter':[10000],
-        'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
-        'activation': ['relu', 'tanh'],
-        'solver': ['adam', 'sgd'],
-        'learning_rate': ['constant']
-    }
-
     # param_grid = {
     #     'max_iter':[10000],
     #     'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
-    #     'activation': ['relu', 'tanh', 'logistic'],
+    #     'activation': ['relu', 'tanh'],
     #     'solver': ['adam', 'sgd'],
-    #     'learning_rate': ['constant', 'adaptive']
+    #     'learning_rate': ['constant']
     # }
+
+    param_grid = {
+        'max_iter':[10000],
+        'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
+        'activation': ['relu', 'tanh', 'logistic'],
+        'solver': ['adam', 'sgd'],
+        'learning_rate': ['constant', 'adaptive']
+    }
 
     # Criar o MLPClassifier
     mlp = MLPClassifier(max_iter=10000, random_state=42)
@@ -38,23 +38,21 @@ def run_model_rede_neural(treino_path, teste_path, useGridSearch=True):
     X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
 
     if (useGridSearch):
-        # best_params = get_hyper_params_rede_neural(X_train, y_train)
+        best_params = get_hyper_params_rede_neural(X_train, y_train)
 
         # Criar e treinar o modelo com os melhores hiperparâmetros
         model = MLPClassifier(
-            hidden_layer_sizes=(100, 100),
-            activation='relu',
-            solver='adam',
-            learning_rate='adaptive',
-            max_iter=1000,
+            hidden_layer_sizes=best_params['hidden_layer_sizes'],
+            activation=best_params['activation'],
+            solver=best_params['solver'],
+            learning_rate=best_params['learning_rate'],
+            max_iter=best_params['max_iter'],
             random_state=42
         )
 
     else:
         model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
 
-    best_params = []
-    
     # Treinar modelo
     model.fit(X_train, y_train)
 
