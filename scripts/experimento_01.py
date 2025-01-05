@@ -8,12 +8,12 @@ from vanilla import run_model_vanilla
 from svm import run_model_svm 
 from random_forest import run_model_rf
 from naive_bayes import run_model_naive_bayes
-
+from xgboost_model import run_model_xgboost
 
 from experimentos import save_results_csv
 
-# vanilla, rede_neural, svm, random_forest, naive_bayes
-modelo = 'random_forest'
+# vanilla, rede_neural, svm, random_forest, naive_bayes, xgboost
+modelo = 'xgboost'
 jogos_medias = ['5','10','15']
 
 temporadas = [
@@ -64,7 +64,8 @@ for jogos_media in jogos_medias:
             elif modelo == 'naive_bayes':
                 accuracy, f1, best_params = run_model_naive_bayes(treino_path, teste_path)
 
-
+            elif modelo == 'xgboost':
+                accuracy, f1, best_params = run_model_xgboost(treino_path, teste_path, True)
 
             # bests_params.append(best_params)
 
