@@ -148,12 +148,12 @@ if __name__ == "__main__":
 
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [128]
-    qtds_jogos_teste = [8]
+    qtds_jogos_treino = [32]
+    qtds_jogos_teste = [1,2,3,4,6,8,16]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
-    num_jogos_passados_media = 10
+    num_jogos_passados_media = 15
 
     # Loop através de todas as temporadas
     for temporada in temporadas:
