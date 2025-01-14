@@ -4,7 +4,7 @@ import pandas as pd
 
 models = ["svm", "random_forest", "naive_bayes", "rede_neural", "vanilla", "xgboost"]
 models_no_underline = ["svm", "random-forest", "naive-bayes", "rede-neural", "vanilla", "xgboost"]
-quant_jogos = 5
+quant_jogos = 15
 
 data_dict = {}
 
