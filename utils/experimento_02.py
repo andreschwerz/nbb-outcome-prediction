@@ -137,9 +137,7 @@ if __name__ == "__main__":
     #               '2022-2023', '2023-2024'
     #              ]
     
-    temporadas = ['2008-2009', '2009-2010', '2011-2012',
-                '2012-2013', '2013-2014', '2014-2015',
-                '2015-2016', '2016-2017', '2019-2020',
+    temporadas = ['2019-2020',
                 '2018-2019', '2020-2021', '2021-2022',
                 '2022-2023', '2023-2024'
                 ]
@@ -148,8 +146,8 @@ if __name__ == "__main__":
 
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [64]
-    qtds_jogos_teste = [1,2,3,4,6,8,16,32]
+    qtds_jogos_treino = [128]
+    qtds_jogos_teste = [1,2,3,4,6,8,16,32,64]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
