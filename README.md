@@ -9,11 +9,25 @@ Este repositório contém experimentos e testes para predição utilizando técn
 - **/data**: Contém conjuntos de dados utilizados nos experimentos.
 - **/scripts**: Scripts para treinamento e avaliação dos modelos.
 - **/utils**: Scripts para a montagem e pré-processamento dos conjuntos de dados de treinamento. Esses scripts requerem conexão com o banco de dados.
+- **/results**: Resultados e métricas dos experimentos realizados.
 
 ## Requisitos
 
-- Python 3.x
-- Bibliotecas: `numpy`, `pandas`, `scikit-learn`, `mysql-connector-python`
+- Python 3.12
+- Bibliotecas:
+  - `certifi==2024.8.30`
+  - `charset-normalizer==3.4.0`
+  - `docopt==0.6.2`
+  - `idna==3.10`
+  - `requests==2.32.3`
+  - `urllib3==2.2.3`
+  - `yarg==0.1.10`
+  - `python-dotenv`
+  - `mysql-connector-python`
+  - `scikit-learn`
+  - `pandas`
+  - `numpy`
+  - `xgboost`
 
 ## Licença
 Este projeto está licenciado sob a Licença MIT.
@@ -28,7 +42,7 @@ Importante: Se você não precisar rodar os scripts de montagem dos conjuntos de
 
 ### 1. Instalar as Dependências
 
-Para instalar todas as dependências necessárias para rodar o projeto, basta executar o comando `pip install -r requirements.txt`. Após isso, para rodar os algo
+Para instalar todas as dependências necessárias para rodar o projeto, basta executar o comando `pip install -r requirements.txt`.
 
 ### 2. Configurar o Banco de Dados
 

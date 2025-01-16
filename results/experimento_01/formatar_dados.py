@@ -1,3 +1,10 @@
+"""
+Este script lê os resultados de experimentos de diferentes modelos de machine learning a partir de arquivos CSV,
+processa os dados e os armazena em um dicionário. Em seguida, converte o dicionário em um DataFrame do pandas,
+formata os resultados de acurácia e f1-score, e salva o DataFrame resultante em um novo arquivo CSV.
+
+"""
+
 import csv
 import os
 import pandas as pd
