@@ -7,6 +7,7 @@ import numpy as np
 from rede_neural import run_model_rede_neural
 from svm import run_model_svm 
 from experimentos import save_results_csv
+from xgboost_model import run_model_xgboost
 
 modelo = 'svm'
 
@@ -39,7 +40,7 @@ def run_models(data_dir):
         treino_path = os.path.join(data_dir, treino_file)
         teste_path = os.path.join(data_dir, teste_file)
 
-        acuracia, f1, best_params = run_model_svm(treino_path, teste_path, True)
+        acuracia, f1, best_params = run_model_xgboost(treino_path, teste_path, True)
 
         bests_params.append(best_params)
         acuracias_from_temporada.append(acuracia)
