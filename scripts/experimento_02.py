@@ -40,7 +40,7 @@ def run_models(data_dir):
         treino_path = os.path.join(data_dir, treino_file)
         teste_path = os.path.join(data_dir, teste_file)
 
-        acuracia, f1, best_params = run_model_xgboost(treino_path, teste_path, True)
+        acuracia, f1, best_params = run_model_xgboost(treino_path, teste_path, False)
 
         bests_params.append(best_params)
         acuracias_from_temporada.append(acuracia)

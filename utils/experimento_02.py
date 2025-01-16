@@ -107,7 +107,7 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         treino = jogos_treino_formatados[indice:indice+qtd_jogos_treino]
         teste = jogos_teste_formatados[indice+qtd_jogos_treino:indice+qtd_jogos_treino+qtd_jogos_teste]
 
-        if not teste:
+        if len(treino) < qtd_jogos_treino or len(teste) < qtd_jogos_teste:
             break
 
         treino_formatado = descompactar_estatisticas(treino)
@@ -115,9 +115,8 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
 
         if filtrarPorTemporada:
             final_path = os.path.join(base_path, 'data', 'experimento_02', temporada, f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
-            # final_path = base_path + f'{temporada}' + '/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
         else:
-            final_path = base_path + 'all/' + f'{qtd_jogos_treino}' + '-' + f'{qtd_jogos_teste}' + '/'
+            final_path = os.path.join(base_path, 'all', f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
         
         # Definir o caminho do diretório para salvar os arquivos
         temporada_path = os.path.join(final_path)
@@ -137,17 +136,19 @@ if __name__ == "__main__":
     #               '2022-2023', '2023-2024'
     #              ]
     
-    temporadas = ['2019-2020',
-                '2018-2019', '2020-2021', '2021-2022',
-                '2022-2023', '2023-2024'
-                ]
+    temporadas = ['2008-2009', '2009-2010', '2011-2012',
+                  '2012-2013', '2013-2014', '2014-2015',
+                  '2015-2016', '2016-2017', '2018-2019', '2019-2020',
+                  '2020-2021', '2021-2022', '2022-2023',
+                  '2023-2024'
+                 ]
 
     # temporadas = ['2012-2013']
 
     filtrarPorTemporada = True
 
-    qtds_jogos_treino = [128]
-    qtds_jogos_teste = [1,2,3,4,6,8,16,32,64]
+    qtds_jogos_treino = [8]
+    qtds_jogos_teste = [1,2,3,4]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
