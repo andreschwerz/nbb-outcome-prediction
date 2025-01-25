@@ -9,7 +9,7 @@ from svm import run_model_svm
 from experimentos import save_results_csv
 from xgboost_model import run_model_xgboost
 
-modelo = 'svm'
+modelo = 'xgb'
 
 bests_params = []
 
@@ -68,8 +68,8 @@ if __name__ == '__main__':
                   '2023-2024'
                  ]
     
-    numeros_jogos_treino = [8]
-    numeros_jogos_teste = [1,2,3,4]
+    numeros_jogos_treino = [16]
+    numeros_jogos_teste = [4,6,8]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 

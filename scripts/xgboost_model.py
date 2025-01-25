@@ -20,9 +20,13 @@ def get_hyper_params_xgboost(X_train, y_train):
     # Configurar o Grid Search com validação cruzada
     grid_search = GridSearchCV(estimator=xgb, param_grid=param_grid, cv=2, scoring='f1_weighted', verbose=2)
 
-    # Executar o Grid Search no conjunto de treino
-    grid_search.fit(X_train, y_train)
-    best_params = grid_search.best_params_
+    try:
+        # Executar o Grid Search no conjunto de treino
+        grid_search.fit(X_train, y_train)
+        best_params = grid_search.best_params_
+    except ValueError as e:
+        print(f"Erro durante o Grid Search: {e}")
+        return None
 
     return best_params
 
@@ -32,6 +36,9 @@ def run_model_xgboost(treino_path, teste_path, useGridSearch=True):
     if useGridSearch:
         # Obter os melhores hiperparâmetros usando Grid Search
         best_params = get_hyper_params_xgboost(X_train, y_train)
+
+        if(best_params is None):
+            return None, None, None
 
         # Criar e treinar o modelo com os melhores hiperparâmetros
         model = XGBClassifier(
