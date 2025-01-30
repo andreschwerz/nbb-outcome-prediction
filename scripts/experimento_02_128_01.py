@@ -100,7 +100,7 @@ if __name__ == '__main__':
                 })
 
                 output_dir = os.path.join(base_path, 'results', 'experimento_02')
-                output_path = os.path.join(output_dir, f'{modelo}_experimento_02_treino_{numero_jogos_treino}_parcial.csv')
+                output_path = os.path.join(output_dir, f'{modelo}_experimento_02_treino_{numero_jogos_treino}_parcial__1.csv')
                 save_results_csv(output_path, results)
             
             # Calcular e adicionar a média e o desvio daquela janela para todas as temporadas
