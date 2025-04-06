@@ -1,27 +1,21 @@
-import os
 import pandas as pd
-from dados import get_jogos_temporada
-from dados import formatar_medias
+import os
+from data import get_jogos_temporada
+from data import get_all_jogos
+from data import formatar_medias
 
-os.environ['PROJECT_PATH'] = os.getcwd()
-
-import json
-from sklearn.preprocessing import MinMaxScaler
-
-def save_to_csv(data, filename):
-    directory = os.path.dirname(filename)
-    os.makedirs(directory, exist_ok=True)
+def save_to_csv(data, filepath):
     df = pd.DataFrame(data)
-    df.to_csv(filename, index=False)
+    os.makedirs(os.path.dirname(filepath), exist_ok=True)  # Cria o diretório se não existir
+    df.to_csv(filepath, index=False)
 
 def descompactar_estatisticas(jogos):
     dados_formatados = []
 
     for jogo in jogos:
-        casa_estatisticas = jogo['estatisticas_casa']  # já é um dicionário
-        visitante_estatisticas = jogo['estatisticas_visitantes']  # já é um dicionário
+        casa_estatisticas = jogo['estatisticas_casa']
+        visitante_estatisticas = jogo['estatisticas_visitantes']
         
-        # Criar um dicionário com as estatísticas descompactadas
         dados = {
             'placar_casa': jogo['placar_casa'],
             'placar_visitante': jogo['placar_visitante'],
@@ -31,7 +25,6 @@ def descompactar_estatisticas(jogos):
             'ano': jogo['ano'],
             'equipe_casa': jogo['equipe_casa'],
             'equipe_visitante': jogo['equipe_visitante'],
-            
             # Estatísticas da equipe da casa
             'Pts_casa': casa_estatisticas.get('Pts', 0),
             '3P_casa': casa_estatisticas.get('3P', 0),
@@ -95,79 +88,76 @@ def descompactar_estatisticas(jogos):
         dados_formatados.append(dados)
     return dados_formatados
 
-def normalizar_dados(dados):
-    df = pd.DataFrame(dados)
+def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada=True, num_jogos_passados_media=10):
+    if filtrarPorTemporada:
+        jogos_treino = get_jogos_temporada(temporada)
+        jogos_teste = get_jogos_temporada(temporada)
+    else:
+        jogos_treino = get_all_jogos()
+        jogos_teste = get_all_jogos()
     
-    # Selecionar as colunas a serem normalizadas
-    colunas_para_normalizar = [
-        'placar_casa', 'placar_visitante',
-        'Pts_casa', '3P_casa', '2P_casa', 'LL_casa', 'RT_casa', 'RO_casa', 'RD_casa', 'AS_casa', 
-        'ER_casa', 'IA%_casa', '3PC_casa', '3PT_casa', '3P%_casa', '2PC_casa', '2PT_casa', 
-        '2P%_casa', 'LLC_casa', 'LLT_casa', 'LL%_casa', 'EN_casa', 'BR_casa', 'B/E_casa', 'TO_casa', 
-        'FC_casa', 'T/FC_casa', 'ET_casa', 'VI_casa', 'EF_casa', 'Pts_visitante', '3P_visitante', 
-        '2P_visitante', 'LL_visitante', 'RT_visitante', 'RO_visitante', 'RD_visitante', 'AS_visitante', 
-        'ER_visitante', 'IA%_visitante', '3PC_visitante', '3PT_visitante', '3P%_visitante', 
-        '2PC_visitante', '2PT_visitante', '2P%_visitante', 'LLC_visitante', 'LLT_visitante', 
-        'LL%_visitante', 'EN_visitante', 'BR_visitante', 'B/E_visitante', 'TO_visitante', 
-        'FC_visitante', 'T/FC_visitante', 'ET_visitante', 'VI_visitante', 'EF_visitante'
-    ]
+    # Formatar os jogos com médias para treino
+    jogos_treino_formatados = formatar_medias(jogos_treino, True, num_jogos_passados_media)
+    jogos_teste_formatados = formatar_medias(jogos_teste, False, num_jogos_passados_media)
+
+    indice = 0
+    num_arquivo = 1
     
-    # Normalizar as colunas selecionadas
-    scaler = MinMaxScaler()
-    df[colunas_para_normalizar] = scaler.fit_transform(df[colunas_para_normalizar])
-    
-    return df.to_dict(orient='records')
+    while indice < len(jogos_treino_formatados):
+        treino = jogos_treino_formatados[indice:indice+qtd_jogos_treino]
+        teste = jogos_teste_formatados[indice+qtd_jogos_treino:indice+qtd_jogos_treino+qtd_jogos_teste]
 
+        if len(treino) < qtd_jogos_treino or len(teste) < qtd_jogos_teste:
+            break
 
-def split_and_save_data(temporada, num_jogos_passados=15, porcentagem_treino=0.5):
-    project_path = os.environ['PROJECT_PATH']  # Recupera o caminho do projeto
-    
-    path_treino = os.path.join(
-        project_path, f'data/experiment_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/treino.csv'
-    )
-    path_teste = os.path.join(
-        project_path, f'data/experiment_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/teste.csv'
-    )
+        treino_formatado = descompactar_estatisticas(treino)
+        teste_formatado = descompactar_estatisticas(teste)
 
-    # Obter todos os jogos da temporada
-    jogos_treino = get_jogos_temporada(temporada)
-    jogos_teste = get_jogos_temporada(temporada)
+        if filtrarPorTemporada:
+            final_path = os.path.join(base_path, 'data', 'experiment_02', temporada, f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
+        else:
+            final_path = os.path.join(base_path, 'all', f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
+        
+        # Definir o caminho do diretório para salvar os arquivos
+        temporada_path = os.path.join(final_path)
+        
+        # Salvar os arquivos de treino e teste
+        save_to_csv(treino_formatado, f'{temporada_path}/treino_{num_arquivo}.csv')
+        save_to_csv(teste_formatado, f'{temporada_path}/teste_{num_arquivo}.csv')
 
-    # Formatar jogos para treino
-    jogos_treino = formatar_medias(jogos_treino, True, num_jogos_passados)
-    # Formatar jogos para teste
-    jogos_teste = formatar_medias(jogos_teste, False, num_jogos_passados)
-    
-    # Descompactar estatísticas
-    jogos_formatados_treino = descompactar_estatisticas(jogos_treino)
-    jogos_formatados_teste = descompactar_estatisticas(jogos_teste)
-
-
-    # Calcular os índices de divisão
-    split_index = int(len(jogos_treino) * porcentagem_treino)
-    
-    # Dividir os dados em treino e teste com base na ordem das datas
-    treino = jogos_formatados_treino[:split_index]
-    teste = jogos_formatados_teste[split_index:]
-
-    # treino = normalizar_dados(treino)
-    # teste = normalizar_dados(teste)
-
-    # Salvar os conjuntos em arquivos CSV
-    save_to_csv(treino, path_treino)
-    save_to_csv(teste, path_teste)
-    print("Arquivos treino.csv e teste.csv foram criados com sucesso.")
+        indice += 1
+        num_arquivo += 1
 
 if __name__ == "__main__":
-    temporadas = [
-        "2008-2009", "2009-2010", "2010-2011", "2011-2012", "2012-2013",
-        "2013-2014", "2014-2015", "2015-2016", "2016-2017", "2017-2018",
-        "2018-2019", "2019-2020", "2020-2021", "2021-2022", "2022-2023", "2023-2024"
-    ]
+
+    # temporadas = ['2013-2014', '2014-2015',
+    #               '2015-2016', '2016-2017', '2019-2020',
+    #               '2018-2019', '2020-2021', '2021-2022',
+    #               '2022-2023', '2023-2024'
+    #              ]
     
-    porcentagens_treino = [0.2, 0.4, 0.5, 0.6, 0.8, 0.9]
+    # temporadas = ['2008-2009', '2009-2010', '2011-2012',
+    #               '2012-2013', '2013-2014', '2014-2015',
+    #               '2015-2016', '2016-2017', '2018-2019', '2019-2020',
+    #               '2020-2021', '2021-2022', '2022-2023',
+    #               '2023-2024'
+    #              ]
+
+    temporadas = ['2021-2022']
+
+    filtrarPorTemporada = True
+ 
+    qtds_jogos_treino = [128]
+    qtds_jogos_teste = [1,2,3,4,6,8,16,32]
+
+    base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     
+    num_jogos_passados_media = 15
+
+    # Loop através de todas as temporadas
     for temporada in temporadas:
-        for porcentagem in porcentagens_treino:
-            print(f"Processando temporada: {temporada} com porcentagem de treino: {porcentagem}")
-            split_and_save_data(temporada, porcentagem_treino=porcentagem)
+        for qtd_jogos_treino in qtds_jogos_treino:
+            for qtd_jogos_teste in qtds_jogos_teste:
+                gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, base_path, filtrarPorTemporada, num_jogos_passados_media)
+                print(f'Arquivos - {temporada} - {qtd_jogos_treino}-{qtd_jogos_teste}')
+
