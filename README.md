@@ -1,20 +1,20 @@
-# Repositório de Experimentos de Predição com Inteligência Artificial
+# Artificial Intelligence Prediction Experiments Repository
 
-## Descrição
+## Description
 
-Este repositório contém experimentos e testes para predição utilizando técnicas de inteligência artificial. O objetivo é explorar e avaliar diferentes abordagens para melhorar a acurácia e a eficiência dos modelos preditivos.
+This repository contains experiments and tests for prediction using artificial intelligence techniques. The goal is to explore and evaluate different approaches to improve the accuracy and efficiency of predictive models.
 
-## Estrutura do Repositório
+## Repository Structure
 
-- **/data**: Contém conjuntos de dados utilizados nos experimentos.
-- **/scripts**: Scripts para treinamento e avaliação dos modelos.
-- **/utils**: Scripts para a montagem e pré-processamento dos conjuntos de dados de treinamento. Esses scripts requerem conexão com o banco de dados.
-- **/results**: Resultados e métricas dos experimentos realizados.
+- **/data**: Contains datasets used in the experiments.
+- **/scripts**: Scripts for training and evaluating the models.
+- **/utils**: Scripts for assembling and pre-processing the training datasets. These scripts require a connection to the database.
+- **/results**: Results and metrics of the experiments conducted.
 
-## Requisitos
+## Requirements
 
 - Python 3.12
-- Bibliotecas:
+- Libraries:
   - `certifi==2024.8.30`
   - `charset-normalizer==3.4.0`
   - `docopt==0.6.2`
@@ -29,28 +29,26 @@ Este repositório contém experimentos e testes para predição utilizando técn
   - `numpy`
   - `xgboost`
 
-## Licença
-Este projeto está licenciado sob a Licença MIT.
+## License
+This project is licensed under the MIT License.
 
-## Ambiente
+## Environment
 
-A conexão com o banco de dados é necessária somente para rodar os scripts de pré-processamento e montagem dos conjuntos de dados de treinamento que estão na pasta /utils.
-Esses scripts utilizam dados armazenados no banco de dados MySQL e criam os conjuntos de dados que serão utilizados nos experimentos de predição.
-Importante: Se você não precisar rodar os scripts de montagem dos conjuntos de dados, a conexão com o banco de dados não será necessária. O restante do projeto pode ser executado normalmente, sem necessidade de configurar o banco de dados.
+A connection to the database is only required to run the pre-processing and dataset assembly scripts located in the /utils folder. These scripts use data stored in the MySQL database and create the datasets to be used in the prediction experiments.  
+**Important**: If you do not need to run the dataset assembly scripts, the database connection will not be necessary. The rest of the project can be run normally without the need to set up the database.
 
-## Como Configurar o Projeto
+## How to Set Up the Project
 
-### 1. Instalar as Dependências
+### 1. Install Dependencies
 
-Para instalar todas as dependências necessárias para rodar o projeto, basta executar o comando `pip install -r requirements.txt`.
+To install all the required dependencies to run the project, simply execute the command: `pip install -r requirements.txt`.
 
-### 2. Configurar o Banco de Dados
+### 2. Configure the Database
 
-O banco de dados MySQL utilizado no projeto está descrito no arquivo `utils/dataset/data-set.sql`. Para configurar o banco de dados:
+The MySQL database used in the project is described in the `utils/dataset/data-set.sql` file. To set up the database:
 
-1. Importe o arquivo `data-set.sql` no seu servidor MySQL com o comando a seguir: `mysql -u <DB_USER> -p <DB_DATABASE> < utils/dataset/data-set.sql`
+1. Import the  `data-set.sql` file into your MySQL server using the following command: `mysql -u <DB_USER> -p <DB_DATABASE> < utils/dataset/data-set.sql`
 
-    **Substitua** `<DB_USER>` pelo nome do usuário do MySQL e `<DB_DATABASE>` pelo nome do banco de dados onde você deseja importar o dataset.
+    **Replace** `<DB_USER>` with the MySQL username and `<DB_DATABASE>` with the name of the database where you want to import the dataset.
 
-2. Configure as credenciais de acesso no arquivo `.env` com as informações adequadas para o seu banco de dados.
-
+2. Configure the access credentials in the `.env` file with the appropriate information for your database.
