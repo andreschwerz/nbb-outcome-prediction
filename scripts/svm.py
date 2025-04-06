@@ -2,7 +2,7 @@ from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, f1_score
 
-from experimentos import read_dados
+from experimentos import read_data
 
 def get_hyper_params_svm(x_train, y_train):
     # Define hyperparameters for Grid Search
@@ -26,7 +26,7 @@ def get_hyper_params_svm(x_train, y_train):
     return best_params
 
 def run_model_svm(train_path, test_path, use_grid_search=True):
-    x_train, x_test, y_train, y_test = read_dados(train_path, test_path)
+    x_train, x_test, y_train, y_test = read_data(train_path, test_path)
 
     if use_grid_search:
         # Get best hyperparameters using Grid Search

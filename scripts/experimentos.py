@@ -1,20 +1,20 @@
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-def read_dados(treino_path, teste_path):
-    treino_df = pd.read_csv(treino_path)
-    teste_df = pd.read_csv(teste_path)
+def read_data(train_path, test_path):
+    train_df = pd.read_csv(train_path)
+    test_df = pd.read_csv(test_path)
 
-    # Create a 'victory_casa' column as the target variable
-    treino_df['victory_casa'] = treino_df['placar_casa'] > treino_df['placar_visitante']
-    teste_df['victory_casa'] = teste_df['placar_casa'] > teste_df['placar_visitante']
+    # Create a 'victory_home' column as the target variable
+    train_df['victory_home'] = train_df['placar_casa'] > train_df['placar_visitante']
+    test_df['victory_home'] = test_df['placar_casa'] > test_df['placar_visitante']
 
     # Define input and output variables
-    x_train = treino_df.drop(['victory_casa'], axis=1)
-    y_train = treino_df['victory_casa']
+    x_train = train_df.drop(['victory_home'], axis=1)
+    y_train = train_df['victory_home']
 
-    x_test = teste_df.drop(['victory_casa'], axis=1)
-    y_test = teste_df['victory_casa']
+    x_test = test_df.drop(['victory_home'], axis=1)
+    y_test = test_df['victory_home']
 
     # Keep only numeric columns
     numeric_features = x_train.select_dtypes(include=['int64', 'float64']).columns

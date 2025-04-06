@@ -2,7 +2,7 @@ from xgboost import XGBClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, f1_score
 
-from experimentos import read_dados
+from experimentos import read_data
 
 def get_hyper_params_xgboost(X_train, y_train):
     # Define the hyperparameters for Grid Search
@@ -31,7 +31,7 @@ def get_hyper_params_xgboost(X_train, y_train):
     return best_params
 
 def run_model_xgboost(train_path, test_path, use_grid_search=True):
-    X_train, X_test, y_train, y_test = read_dados(train_path, test_path)
+    X_train, X_test, y_train, y_test = read_data(train_path, test_path)
 
     if use_grid_search:
         # Get the best hyperparameters using Grid Search
