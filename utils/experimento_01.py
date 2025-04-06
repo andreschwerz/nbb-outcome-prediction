@@ -123,10 +123,10 @@ def split_and_save_data(temporada, num_jogos_passados=15, porcentagem_treino=0.5
     project_path = os.environ['PROJECT_PATH']  # Recupera o caminho do projeto
     
     path_treino = os.path.join(
-        project_path, f'data/experimento_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/treino.csv'
+        project_path, f'data/experiment_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/treino.csv'
     )
     path_teste = os.path.join(
-        project_path, f'data/experimento_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/teste.csv'
+        project_path, f'data/experiment_01/{num_jogos_passados}/{temporada}/{porcentagem_treino}/teste.csv'
     )
 
     # Obter todos os jogos da temporada

@@ -1,7 +1,7 @@
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score, f1_score
 
-from experimentos import read_data
+from experiments import read_data
 
 def run_model_naive_bayes(train_path, test_path, use_grid_search=False):
     x_train, x_test, y_train, y_test = read_data(train_path, test_path)

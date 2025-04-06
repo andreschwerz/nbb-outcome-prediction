@@ -10,7 +10,7 @@ from random_forest import run_model_rf
 from naive_bayes import run_model_naive_bayes
 from xgboost_model import run_model_xgboost
 
-from experimentos import save_results_csv
+from experiments import save_results_csv
 
 # vanilla, neural_network, svm, random_forest, naive_bayes, xgboost
 modelo = 'xgboost'
@@ -43,8 +43,8 @@ for jogos_media in jogos_medias:
             porcentagem_str = str(porcentagem)
 
             # Construir os caminhos de treino e teste usando os.path
-            treino_path = os.path.join(base_path, "data", "experimento_01", jogos_media, temporada, porcentagem_str, "treino.csv")
-            teste_path = os.path.join(base_path, "data", "experimento_01", jogos_media, temporada, porcentagem_str, "teste.csv")
+            treino_path = os.path.join(base_path, "data", "experiment_01", jogos_media, temporada, porcentagem_str, "treino.csv")
+            teste_path = os.path.join(base_path, "data", "experiment_01", jogos_media, temporada, porcentagem_str, "teste.csv")
 
             # Executar o modelo e armazenar a acurácia
             print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
@@ -97,7 +97,7 @@ for jogos_media in jogos_medias:
             'Desvio Padrão F1-Score': f'{desvio_padrao_f1_score:.2f}',
         })
 
-        path = os.path.join(base_path, 'results', 'experimento_01', f'{modelo}_experimento_01_{jogos_media}.csv')
+        path = os.path.join(base_path, 'results', 'experiment_01', f'{modelo}_experiment_01_{jogos_media}.csv')
         save_results_csv(path, results)
 
     results = []

@@ -114,7 +114,7 @@ def gerar_arquivos_treino_teste(temporada, qtd_jogos_treino, qtd_jogos_teste, ba
         teste_formatado = descompactar_estatisticas(teste)
 
         if filtrarPorTemporada:
-            final_path = os.path.join(base_path, 'data', 'experimento_02', temporada, f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
+            final_path = os.path.join(base_path, 'data', 'experiment_02', temporada, f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
         else:
             final_path = os.path.join(base_path, 'all', f'{qtd_jogos_treino}'+'-'+f'{qtd_jogos_teste}')
         

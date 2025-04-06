@@ -2,7 +2,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import accuracy_score, f1_score
 
-from experimentos import read_data
+from experiments import read_data
 
 def get_hyper_params_neural_network(x_train, y_train):
     # Define hyperparameters for Grid Search

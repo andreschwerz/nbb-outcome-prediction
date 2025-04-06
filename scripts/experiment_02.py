@@ -6,7 +6,7 @@ import numpy as np
 
 from neural_network import run_model_neural_network
 from svm import run_model_svm 
-from experimentos import save_results_csv
+from experiments import save_results_csv
 from xgboost_model import run_model_xgboost
 
 modelo = 'xgb'
@@ -80,7 +80,7 @@ if __name__ == '__main__':
             acuracias_temporadas = []
 
             for temporada in temporadas:    
-                data_dir = os.path.join(base_path, "data", "experimento_02", temporada, f'{numero_jogos_treino}'+'-'+f'{numero_jogos_teste}')
+                data_dir = os.path.join(base_path, "data", "experiment_02", temporada, f'{numero_jogos_treino}'+'-'+f'{numero_jogos_teste}')
 
                 # Rodando modelos para uma temporada
                 print(f'Rodando modelo para temporada {temporada}, com janela {numero_jogos_treino} - {numero_jogos_teste}')
@@ -99,8 +99,8 @@ if __name__ == '__main__':
                     'Desvio Padrão F1-Score': '-',
                 })
 
-                output_dir = os.path.join(base_path, 'results', 'experimento_02')
-                output_path = os.path.join(output_dir, f'{modelo}_experimento_02_treino_{numero_jogos_treino}_parcial.csv')
+                output_dir = os.path.join(base_path, 'results', 'experiment_02')
+                output_path = os.path.join(output_dir, f'{modelo}_experiment_02_treino_{numero_jogos_treino}_parcial.csv')
                 save_results_csv(output_path, results)
             
             # Calcular e adicionar a média e o desvio daquela janela para todas as temporadas
@@ -119,7 +119,7 @@ if __name__ == '__main__':
                 'Desvio Padrão F1-Score': f'{desvio_padrao_f1_score:.2f}',
             })
 
-            output_dir = os.path.join(base_path, 'results', 'experimento_02')
+            output_dir = os.path.join(base_path, 'results', 'experiment_02')
             output_path = os.path.join(output_dir, f'{modelo}_experimento_02_treino_{numero_jogos_treino}.csv')
             save_results_csv(output_path, results)
 

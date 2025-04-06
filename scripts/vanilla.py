@@ -1,7 +1,7 @@
 from sklearn.metrics import accuracy_score, f1_score
 import numpy as np
 
-from experimentos import read_data
+from experiments import read_data
 
 def run_model_vanilla(train_path, test_path):
     # Reads the data (using a mock function to simulate the data)
