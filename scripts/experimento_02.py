@@ -4,7 +4,7 @@ import re
 
 import numpy as np
 
-from rede_neural import run_model_rede_neural
+from neural_network import run_model_neural_network
 from svm import run_model_svm 
 from experimentos import save_results_csv
 from xgboost_model import run_model_xgboost

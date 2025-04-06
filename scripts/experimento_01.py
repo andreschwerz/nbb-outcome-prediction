@@ -3,7 +3,7 @@ import time
 import pandas as pd
 import numpy as np
 
-from rede_neural import run_model_rede_neural
+from neural_network import run_model_neural_network
 from vanilla import run_model_vanilla
 from svm import run_model_svm 
 from random_forest import run_model_rf
@@ -12,7 +12,7 @@ from xgboost_model import run_model_xgboost
 
 from experimentos import save_results_csv
 
-# vanilla, rede_neural, svm, random_forest, naive_bayes, xgboost
+# vanilla, neural_network, svm, random_forest, naive_bayes, xgboost
 modelo = 'xgboost'
 jogos_medias = ['5','10','15']
 
@@ -49,8 +49,8 @@ for jogos_media in jogos_medias:
             # Executar o modelo e armazenar a acurácia
             print(f"Rodando modelo para temporada {temporada} e porcentagem {porcentagem_str}")
 
-            if(modelo == 'rede_neural'):
-                accuracy, f1, best_params = run_model_rede_neural(treino_path, teste_path, True)
+            if(modelo == 'neural_network'):
+                accuracy, f1, best_params = run_model_neural_network(treino_path, teste_path, True)
 
             elif(modelo == 'vanilla'):
                 accuracy, f1, best_params = run_model_vanilla(treino_path, teste_path)

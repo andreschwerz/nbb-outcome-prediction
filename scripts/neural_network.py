@@ -4,7 +4,7 @@ from sklearn.metrics import accuracy_score, f1_score
 
 from experimentos import read_data
 
-def get_hyper_params_rede_neural(x_train, y_train):
+def get_hyper_params_neural_network(x_train, y_train):
     # Define hyperparameters for Grid Search
     param_grid = {
         'max_iter': [10000],
@@ -26,11 +26,11 @@ def get_hyper_params_rede_neural(x_train, y_train):
 
     return best_params
 
-def run_model_rede_neural(train_path, test_path, use_grid_search=True):
+def run_model_neural_network(train_path, test_path, use_grid_search=True):
     x_train, x_test, y_train, y_test = read_data(train_path, test_path)
 
     if use_grid_search:
-        best_params = get_hyper_params_rede_neural(x_train, y_train)
+        best_params = get_hyper_params_neural_network(x_train, y_train)
 
         # Create and train the model with the best hyperparameters
         model = MLPClassifier(
