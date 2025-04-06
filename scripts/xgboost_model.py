@@ -5,42 +5,42 @@ from sklearn.metrics import accuracy_score, f1_score
 from experimentos import read_dados
 
 def get_hyper_params_xgboost(X_train, y_train):
-    # Definir os hiperparâmetros para o Grid Search
+    # Define the hyperparameters for Grid Search
     param_grid = {
-        'n_estimators': [50, 100, 150],  # Número de árvores
-        'max_depth': [3, 5, 7],         # Profundidade máxima da árvore
-        'learning_rate': [0.01, 0.1, 0.2],  # Taxa de aprendizado
-        'subsample': [0.8, 1.0],        # Fração de amostras para cada árvore
-        'colsample_bytree': [0.8, 1.0], # Fração de recursos para cada árvore
+        'n_estimators': [50, 100, 150],  # Number of trees
+        'max_depth': [3, 5, 7],         # Maximum depth of the tree
+        'learning_rate': [0.01, 0.1, 0.2],  # Learning rate
+        'subsample': [0.8, 1.0],        # Fraction of samples for each tree
+        'colsample_bytree': [0.8, 1.0], # Fraction of features for each tree
     }
 
-    # Criar o modelo XGBoost
+    # Create the XGBoost model
     xgb = XGBClassifier(eval_metric='logloss', random_state=42)
 
-    # Configurar o Grid Search com validação cruzada
+    # Set up the Grid Search with cross-validation
     grid_search = GridSearchCV(estimator=xgb, param_grid=param_grid, cv=2, scoring='f1_weighted', verbose=2)
 
     try:
-        # Executar o Grid Search no conjunto de treino
+        # Run the Grid Search on the training set
         grid_search.fit(X_train, y_train)
         best_params = grid_search.best_params_
     except ValueError as e:
-        print(f"Erro durante o Grid Search: {e}")
+        print(f"Error during Grid Search: {e}")
         return None
 
     return best_params
 
-def run_model_xgboost(treino_path, teste_path, useGridSearch=True):
-    X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
+def run_model_xgboost(train_path, test_path, use_grid_search=True):
+    X_train, X_test, y_train, y_test = read_dados(train_path, test_path)
 
-    if useGridSearch:
-        # Obter os melhores hiperparâmetros usando Grid Search
+    if use_grid_search:
+        # Get the best hyperparameters using Grid Search
         best_params = get_hyper_params_xgboost(X_train, y_train)
 
         if(best_params is None):
             return None, None, None
 
-        # Criar e treinar o modelo com os melhores hiperparâmetros
+        # Create and train the model with the best hyperparameters
         model = XGBClassifier(
             n_estimators=best_params['n_estimators'],
             max_depth=best_params['max_depth'],
@@ -51,7 +51,7 @@ def run_model_xgboost(treino_path, teste_path, useGridSearch=True):
             random_state=42
         )
     else:
-        # Modelo com hiperparâmetros padrão
+        # Model with default hyperparameters
         model = XGBClassifier(
             n_estimators=100,
             max_depth=3,
@@ -63,14 +63,14 @@ def run_model_xgboost(treino_path, teste_path, useGridSearch=True):
         )
         best_params = []
 
-    # Treinar o modelo
+    # Train the model
     model.fit(X_train, y_train)
 
-    # Fazer previsões com o conjunto de teste
+    # Make predictions with the test set
     y_pred = model.predict(X_test)
 
-    # Avaliar o desempenho do modelo
+    # Evaluate the model's performance
     accuracy = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred, average='weighted')  # Para lidar com desbalanceamento de classes
+    f1 = f1_score(y_test, y_pred, average='weighted')  # To handle class imbalance
 
     return accuracy, f1, best_params

@@ -3,24 +3,24 @@ from sklearn.metrics import accuracy_score, f1_score
 
 from experimentos import read_dados
 
-def run_model_naive_bayes(treino_path, teste_path, useGridSearch=False):
-    X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
+def run_model_naive_bayes(train_path, test_path, use_grid_search=False):
+    x_train, x_test, y_train, y_test = read_dados(train_path, test_path)
 
-    # Criar o modelo Naïve Bayes
+    # Create the Naïve Bayes model
     model = GaussianNB()
 
-    # O Naïve Bayes não utiliza Grid Search para ajuste de hiperparâmetros, mas mantemos o parâmetro
-    # `useGridSearch` para consistência com os outros classificadores.
-    best_params = []  # Não há hiperparâmetros ajustáveis aqui
+    # Naïve Bayes does not use Grid Search for hyperparameter tuning,
+    # but we keep the `use_grid_search` parameter for consistency with other classifiers.
+    best_params = []  # No tunable hyperparameters here
 
-    # Treinar o modelo
-    model.fit(X_train, y_train)
+    # Train the model
+    model.fit(x_train, y_train)
 
-    # Fazer previsões com o conjunto de teste
-    y_pred = model.predict(X_test)
+    # Make predictions on the test set
+    y_pred = model.predict(x_test)
 
-    # Avaliar o desempenho do modelo
+    # Evaluate model performance
     accuracy = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred, average='weighted')  # Para lidar com desbalanceamento de classes
+    f1 = f1_score(y_test, y_pred, average='weighted')  # Handles class imbalance
 
     return accuracy, f1, best_params

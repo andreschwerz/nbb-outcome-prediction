@@ -4,43 +4,35 @@ from sklearn.metrics import accuracy_score, f1_score
 
 from experimentos import read_dados
 
-def get_hyper_params_rede_neural(X_train, y_train):
-    # Definir os hiperparâmetros para o Grid Search
-    # param_grid = {
-    #     'max_iter':[10000],
-    #     'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
-    #     'activation': ['relu', 'tanh'],
-    #     'solver': ['adam', 'sgd'],
-    #     'learning_rate': ['constant']
-    # }
-
+def get_hyper_params_rede_neural(x_train, y_train):
+    # Define hyperparameters for Grid Search
     param_grid = {
-        'max_iter':[10000],
+        'max_iter': [10000],
         'hidden_layer_sizes': [(50, 50), (100, 50), (100, 100)],
         'activation': ['relu', 'tanh', 'logistic'],
         'solver': ['adam', 'sgd'],
         'learning_rate': ['constant', 'adaptive']
     }
 
-    # Criar o MLPClassifier
+    # Create the MLPClassifier
     mlp = MLPClassifier(max_iter=10000, random_state=42)
 
-    # Configurar o Grid Search com validação cruzada
+    # Set up Grid Search with cross-validation
     grid_search = GridSearchCV(estimator=mlp, param_grid=param_grid, cv=2, scoring='f1_weighted', verbose=2)
 
-    # Executar o Grid Search no conjunto de treino
-    grid_search.fit(X_train, y_train)
+    # Run Grid Search on the training set
+    grid_search.fit(x_train, y_train)
     best_params = grid_search.best_params_
 
     return best_params
 
-def run_model_rede_neural(treino_path, teste_path, useGridSearch=True):
-    X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
+def run_model_rede_neural(train_path, test_path, use_grid_search=True):
+    x_train, x_test, y_train, y_test = read_dados(train_path, test_path)
 
-    if (useGridSearch):
-        best_params = get_hyper_params_rede_neural(X_train, y_train)
+    if use_grid_search:
+        best_params = get_hyper_params_rede_neural(x_train, y_train)
 
-        # Criar e treinar o modelo com os melhores hiperparâmetros
+        # Create and train the model with the best hyperparameters
         model = MLPClassifier(
             hidden_layer_sizes=best_params['hidden_layer_sizes'],
             activation=best_params['activation'],
@@ -53,15 +45,15 @@ def run_model_rede_neural(treino_path, teste_path, useGridSearch=True):
     else:
         model = MLPClassifier(hidden_layer_sizes=(50, 50), max_iter=10000, random_state=42)
 
-    # Treinar modelo
-    model.fit(X_train, y_train)
+    # Train the model
+    model.fit(x_train, y_train)
 
-    # Fazer previsões com o conjunto de teste
-    y_pred = model.predict(X_test)
+    # Make predictions on the test set
+    y_pred = model.predict(x_test)
 
-    # Avaliar o desempenho do modelo
+    # Evaluate model performance
     accuracy = accuracy_score(y_test, y_pred)
-    f1 = f1_score(y_test, y_pred, average='weighted')  # 'weighted' para lidar com desbalanceamento de classes  
-                                                       # Calcula o F1 Score para cada classe individualmente, mas pondera cada valor pela proporção de amostras de cada classe no conjunto de dados.
+    f1 = f1_score(y_test, y_pred, average='weighted')  # 'weighted' handles class imbalance  
+                                                       # Calculates the F1 Score for each class individually, but weights by the number of samples of each class
 
     return accuracy, f1, best_params

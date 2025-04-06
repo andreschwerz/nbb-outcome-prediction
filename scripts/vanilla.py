@@ -3,16 +3,16 @@ import numpy as np
 
 from experimentos import read_dados
 
-def run_model_vanilla(treino_path, teste_path):
-    # Lê os dados (usando uma função fictícia para simular os dados)
-    X_train, X_test, y_train, y_test = read_dados(treino_path, teste_path)
+def run_model_vanilla(train_path, test_path):
+    # Reads the data (using a mock function to simulate the data)
+    X_train, X_test, y_train, y_test = read_dados(train_path, test_path)
 
-    # Simula as previsões: tudo como True
-    y_pred = np.ones_like(y_test)  # Cria um array com os mesmos tamanhos de y_test e preenche com True (ou 1)
+    # Simulates predictions: everything as True
+    y_pred = np.ones_like(y_test)  # Creates an array with the same size as y_test and fills it with True (or 1)
 
-    # Avalia o desempenho simulando 100% de previsões como "True"
+    # Evaluates performance by simulating 100% of predictions as "True"
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average='weighted')
 
-    # Retorna os resultados simulados
+    # Returns the simulated results
     return accuracy, f1, []
