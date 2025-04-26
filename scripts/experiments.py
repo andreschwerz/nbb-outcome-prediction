@@ -28,7 +28,10 @@ def read_data(train_path, test_path):
     x_train = scaler.fit_transform(x_train)
     x_test = scaler.transform(x_test)
 
-    return x_train, x_test, y_train, y_test
+    # Create a dictionary for feature names
+    feature_names_dict = {i: name for i, name in enumerate(numeric_features)}
+
+    return x_train, x_test, y_train, y_test, feature_names_dict
 
 def save_results_csv(path, results):
     # Create a DataFrame from results

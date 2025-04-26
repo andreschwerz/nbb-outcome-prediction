@@ -1,0 +1,3 @@
+Sliding Window,Season,Accuracy,Accuracy Std Dev,F1-Score,F1-Score Std Dev
+128-8,2023-2024,0.92,-,0.92,-
+128-8,-,0.92,0.00,0.92,0.00

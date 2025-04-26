@@ -2,14 +2,22 @@ import os
 import time
 import re
 
+import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import xgboost as xgb
+
 
 from experiments import save_results_csv
 from xgboost_model import run_model_xgboost
 
+
 model = 'xgb'
 
 best_params_list = []
+
+feature_importance_sum = {}
+
 
 def extract_number(file_name):
     # Extract the number from the file name.
@@ -32,12 +40,14 @@ def run_models(data_dir):
     accuracies_by_season = []
     f1_scores_by_season = []
 
+    global feature_importance_sum  # <- adiciona isso para usar o dict global
+
     # Loop through training and testing files
     for train_file, test_file in zip(train_files, test_files):
         train_path = os.path.join(data_dir, train_file)
         test_path = os.path.join(data_dir, test_file)
 
-        accuracy, f1, best_params = run_model_xgboost(train_path, test_path, True)
+        accuracy, f1, best_params, model, feature_names_dict= run_model_xgboost(train_path, test_path, False)
 
         if accuracy is None:
             continue
@@ -45,11 +55,41 @@ def run_models(data_dir):
             best_params_list.append(best_params)
             accuracies_by_season.append(accuracy)
             f1_scores_by_season.append(f1)
+
+            # Pegando importância de features
+            booster = model.get_booster()
+            feature_scores = booster.get_score(importance_type='gain')
+
+            # Atualizando o acumulador de importância
+            for feature_name, importance in feature_scores.items():
+                if feature_name in feature_importance_sum:
+                    feature_importance_sum[feature_name] += importance
+                else:
+                    feature_importance_sum[feature_name] = importance
     
+    # 🔥 Depois que terminar todos os arquivos da season:
+    if feature_importance_sum:
+        importance_df = pd.DataFrame.from_dict(feature_importance_sum, orient='index', columns=['Importance'])
+        importance_df = importance_df.sort_values(by='Importance', ascending=False)
+
+        # Salvando a importância global
+        global_output_dir = os.path.join(base_path, 'results', 'experiment_02', 'feature_importance')
+        os.makedirs(global_output_dir, exist_ok=True)
+
+        importance_df.to_csv(os.path.join(global_output_dir, f'global_feature_importance.csv'))
+
+        # Plotando
+        importance_df.plot(kind='bar', figsize=(14,8), legend=False, title="Global Feature Importance")
+        plt.ylabel("Importance (sum across all models)")
+        plt.tight_layout()
+        plt.savefig(os.path.join(global_output_dir, 'global_feature_importance.png'))
+        plt.close()
+
     avg_accuracy = np.mean(accuracies_by_season)
     avg_f1_score = np.mean(f1_scores_by_season)
 
     return avg_accuracy, avg_f1_score
+
 
 if __name__ == '__main__':
     # Start the timer
@@ -59,15 +99,15 @@ if __name__ == '__main__':
     results = []
 
     seasons = [
-        '2008-2009', '2009-2010', '2011-2012',
-        '2012-2013', '2013-2014', '2014-2015',
-        '2015-2016', '2016-2017', '2018-2019', '2019-2020',
-        '2020-2021', '2021-2022', '2022-2023',
+        #'2008-2009', '2009-2010', '2011-2012',
+        #'2012-2013', '2013-2014', '2014-2015',
+        #'2015-2016', '2016-2017', '2018-2019', '2019-2020',
+        #'2020-2021', '2021-2022', '2022-2023',
         '2023-2024'
     ]
     
-    train_games_counts = [16]
-    test_games_counts = [4, 6, 8]
+    train_games_counts = [128]
+    test_games_counts = [8]
 
     base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 

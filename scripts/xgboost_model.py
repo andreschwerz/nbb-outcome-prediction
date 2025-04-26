@@ -31,7 +31,7 @@ def get_hyper_params_xgboost(X_train, y_train):
     return best_params
 
 def run_model_xgboost(train_path, test_path, use_grid_search=True):
-    X_train, X_test, y_train, y_test = read_data(train_path, test_path)
+    X_train, X_test, y_train, y_test, feature_names_dict = read_data(train_path, test_path)
 
     if use_grid_search:
         # Get the best hyperparameters using Grid Search
@@ -73,4 +73,4 @@ def run_model_xgboost(train_path, test_path, use_grid_search=True):
     accuracy = accuracy_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred, average='weighted')  # To handle class imbalance
 
-    return accuracy, f1, best_params
+    return accuracy, f1, best_params, model, feature_names_dict
