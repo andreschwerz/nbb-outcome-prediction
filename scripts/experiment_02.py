@@ -69,7 +69,19 @@ def run_models(data_dir):
     
     # 🔥 Depois que terminar todos os arquivos da season:
     if feature_importance_sum:
+        # Criando o DataFrame de importância
         importance_df = pd.DataFrame.from_dict(feature_importance_sum, orient='index', columns=['Importance'])
+
+        # Mapeando os nomes f0, f1, etc., para o nome real da feature
+        def map_feature_name(f):
+            # Extrai o número depois do "f" e converte para int
+            idx = int(f[1:])
+            return feature_names_dict.get(idx, f)  # Se não encontrar no dicionário, mantém o original
+
+        # Renomeando o índice
+        importance_df.index = importance_df.index.map(map_feature_name)
+
+        # Ordenando pela importância
         importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
         # Salvando a importância global
@@ -77,7 +89,7 @@ def run_models(data_dir):
         os.makedirs(global_output_dir, exist_ok=True)
 
         importance_df.to_csv(os.path.join(global_output_dir, f'global_feature_importance.csv'))
-
+        
         # Plotando
         importance_df.plot(kind='bar', figsize=(14,8), legend=False, title="Global Feature Importance")
         plt.ylabel("Importance (sum across all models)")
