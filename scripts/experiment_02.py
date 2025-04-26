@@ -5,19 +5,13 @@ import re
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import xgboost as xgb
-
 
 from experiments import save_results_csv
 from xgboost_model import run_model_xgboost
 
-
 model = 'xgb'
-
 best_params_list = []
-
 feature_importance_sum = {}
-
 
 def extract_number(file_name):
     # Extract the number from the file name.
@@ -40,14 +34,14 @@ def run_models(data_dir):
     accuracies_by_season = []
     f1_scores_by_season = []
 
-    global feature_importance_sum  # <- adiciona isso para usar o dict global
+    global feature_importance_sum  # <- add this to use the global dict
 
     # Loop through training and testing files
     for train_file, test_file in zip(train_files, test_files):
         train_path = os.path.join(data_dir, train_file)
         test_path = os.path.join(data_dir, test_file)
 
-        accuracy, f1, best_params, model, feature_names_dict= run_model_xgboost(train_path, test_path, False)
+        accuracy, f1, best_params, model, feature_names_dict = run_model_xgboost(train_path, test_path, False)
 
         if accuracy is None:
             continue
@@ -56,41 +50,41 @@ def run_models(data_dir):
             accuracies_by_season.append(accuracy)
             f1_scores_by_season.append(f1)
 
-            # Pegando importância de features
+            # Getting feature importance
             booster = model.get_booster()
             feature_scores = booster.get_score(importance_type='gain')
 
-            # Atualizando o acumulador de importância
+            # Updating the importance accumulator
             for feature_name, importance in feature_scores.items():
                 if feature_name in feature_importance_sum:
                     feature_importance_sum[feature_name] += importance
                 else:
                     feature_importance_sum[feature_name] = importance
     
-    # 🔥 Depois que terminar todos os arquivos da season:
+    # 🔥 After finishing all files for the season:
     if feature_importance_sum:
-        # Criando o DataFrame de importância
+        # Creating the importance DataFrame
         importance_df = pd.DataFrame.from_dict(feature_importance_sum, orient='index', columns=['Importance'])
 
-        # Mapeando os nomes f0, f1, etc., para o nome real da feature
+        # Mapping feature names f0, f1, etc., to the actual feature name
         def map_feature_name(f):
-            # Extrai o número depois do "f" e converte para int
+            # Extract the number after "f" and convert to int
             idx = int(f[1:])
-            return feature_names_dict.get(idx, f)  # Se não encontrar no dicionário, mantém o original
+            return feature_names_dict.get(idx, f)  # If not found in the dictionary, keep the original
 
-        # Renomeando o índice
+        # Renaming the index
         importance_df.index = importance_df.index.map(map_feature_name)
 
-        # Ordenando pela importância
+        # Sorting by importance
         importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
-        # Salvando a importância global
+        # Saving the global feature importance
         global_output_dir = os.path.join(base_path, 'results', 'experiment_02', 'feature_importance')
         os.makedirs(global_output_dir, exist_ok=True)
 
         importance_df.to_csv(os.path.join(global_output_dir, f'global_feature_importance.csv'))
         
-        # Plotando
+        # Plotting
         importance_df.plot(kind='bar', figsize=(14,8), legend=False, title="Global Feature Importance")
         plt.ylabel("Importance (sum across all models)")
         plt.tight_layout()
@@ -107,7 +101,7 @@ if __name__ == '__main__':
     # Start the timer
     start_time_all = time.time()
 
-    # Array to store the results of each season / window
+    # Array to store the results of each season/window
     results = []
 
     seasons = [
@@ -153,7 +147,7 @@ if __name__ == '__main__':
                 output_path = os.path.join(output_dir, f'{model}_experiment_02_train_{train_games_count}_partial.csv')
                 save_results_csv(output_path, results)
             
-            # Calculate and add the average and std dev for that window across all seasons
+            # Calculate and add the average and standard deviation for that window across all seasons
             avg_accuracy = np.mean(accuracies_all_seasons)
             avg_f1_score = np.mean(f1_scores_all_seasons)
 
