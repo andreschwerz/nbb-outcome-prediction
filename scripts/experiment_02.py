@@ -71,6 +71,25 @@ def run_models(data_dir):
             # Extract the number after "f" and convert to int
             idx = int(f[1:])
             return feature_names_dict.get(idx, f)  # If not found in the dictionary, keep the original
+        
+        # Dicionário com descrições detalhadas das features
+        feature_descriptions = {
+            'placar_casa': 'Placar da equipe da casa',
+            'placar_visitante': 'Placar da equipe visitante',
+            'EF_casa': 'Eficiência ofensiva da casa',
+            'RT_casa': 'Rebotes totais da casa',
+            'AS_visitante': 'Assistências do visitante',
+            'B/E_visitante': 'Bloqueios e erros do visitante',
+            '2P%_casa': 'Aproveitamento de 2 pontos da casa (%)',
+            'Pts_casa': 'Pontos da casa',
+            '2P_casa': 'Cestas de 2 pontos da casa',
+            'LL%_visitante': 'Aproveitamento de lances livres do visitante (%)',
+            'EF_visitante': 'Eficiência ofensiva do visitante',
+            '2PT_visitante': 'Cestas de 2 pontos do visitante',
+            'RD_visitante': 'Rebotes defensivos do visitante',
+            'EN_casa': 'Erros não forçados da casa',
+            '3P%_casa': 'Aproveitamento de 3 pontos da casa (%)'
+        }
 
         # Renaming the index
         importance_df.index = importance_df.index.map(map_feature_name)
@@ -78,15 +97,36 @@ def run_models(data_dir):
         # Sorting by importance
         importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
+        # Selecting only 15 main features
+        top_features_df = importance_df.head(15)
+
         # Saving the global feature importance
         global_output_dir = os.path.join(base_path, 'results', 'experiment_02', 'feature_importance')
         os.makedirs(global_output_dir, exist_ok=True)
-
-        importance_df.to_csv(os.path.join(global_output_dir, f'global_feature_importance.csv'))
         
-        # Plotting
-        importance_df.plot(kind='bar', figsize=(14,8), legend=False, title="Global Feature Importance")
-        plt.ylabel("Importance (sum across all models)")
+        # Plotando o gráfico
+        fig, ax = plt.subplots(figsize=(14, 8))
+        bars = ax.bar(top_features_df.index, top_features_df['Importance'])
+
+        # Título e eixos
+        ax.set_title("Top 15 Global Feature Importance")
+        ax.set_ylabel("Importance (sum across all models)")
+        plt.xticks(rotation=45, ha='right')
+
+        # Monta a legenda personalizada com os nomes reais das features
+        #feature_legends = [f"{abbr}: {full}" for abbr, full in zip(top_features_df.index, top_features_df.index)]
+        feature_legends = [f"{abbr}: {feature_descriptions.get(abbr, abbr)}" for abbr in top_features_df.index]
+
+        # Junta tudo em uma string
+        legend_text = "\n".join(feature_legends)
+
+        # Estilo da caixa
+        props = dict(facecolor='white', alpha=0.8)
+
+        # Adiciona a legenda dentro da área do gráfico, por exemplo no canto superior direito
+        ax.text(0.50, 0.98, legend_text, transform=ax.transAxes,
+                fontsize=12, verticalalignment='top', bbox=props)
+
         plt.tight_layout()
         plt.savefig(os.path.join(global_output_dir, 'global_feature_importance.png'))
         plt.close()
