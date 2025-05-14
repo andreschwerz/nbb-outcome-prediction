@@ -34,7 +34,7 @@ def run_models(data_dir):
     accuracies_by_season = []
     f1_scores_by_season = []
 
-    global feature_importance_sum  # <- add this to use the global dict
+    global feature_importance_sum  # <- use the global dict
 
     # Loop through training and testing files
     for train_file, test_file in zip(train_files, test_files):
@@ -50,11 +50,11 @@ def run_models(data_dir):
             accuracies_by_season.append(accuracy)
             f1_scores_by_season.append(f1)
 
-            # Getting feature importance
+            # Get feature importance
             booster = model.get_booster()
             feature_scores = booster.get_score(importance_type='gain')
 
-            # Updating the importance accumulator
+            # Update the importance accumulator
             for feature_name, importance in feature_scores.items():
                 if feature_name in feature_importance_sum:
                     feature_importance_sum[feature_name] += importance
@@ -63,67 +63,66 @@ def run_models(data_dir):
     
     # 🔥 After finishing all files for the season:
     if feature_importance_sum:
-        # Creating the importance DataFrame
+        # Create the importance DataFrame
         importance_df = pd.DataFrame.from_dict(feature_importance_sum, orient='index', columns=['Importance'])
 
-        # Mapping feature names f0, f1, etc., to the actual feature name
+        # Map feature names f0, f1, etc., to the actual feature name
         def map_feature_name(f):
             # Extract the number after "f" and convert to int
             idx = int(f[1:])
             return feature_names_dict.get(idx, f)  # If not found in the dictionary, keep the original
         
-        # Dicionário com descrições detalhadas das features
+        # Dictionary with detailed descriptions of the features
         feature_descriptions = {
-            'placar_casa': 'Placar da equipe da casa',
-            'placar_visitante': 'Placar da equipe visitante',
-            'EF_casa': 'Eficiência ofensiva da casa',
-            'RT_casa': 'Rebotes totais da casa',
-            'AS_visitante': 'Assistências do visitante',
-            'B/E_visitante': 'Bloqueios e erros do visitante',
-            '2P%_casa': 'Aproveitamento de 2 pontos da casa (%)',
-            'Pts_casa': 'Pontos da casa',
-            '2P_casa': 'Cestas de 2 pontos da casa',
-            'LL%_visitante': 'Aproveitamento de lances livres do visitante (%)',
-            'EF_visitante': 'Eficiência ofensiva do visitante',
-            '2PT_visitante': 'Cestas de 2 pontos do visitante',
-            'RD_visitante': 'Rebotes defensivos do visitante',
-            'EN_casa': 'Erros não forçados da casa',
-            '3P%_casa': 'Aproveitamento de 3 pontos da casa (%)'
+            'placar_casa': 'Home team score',
+            'placar_visitante': 'Away team score',
+            'EF_casa': 'Home offensive efficiency',
+            'RT_casa': 'Home total rebounds',
+            'AS_visitante': 'Away assists',
+            'B/E_visitante': 'Away blocks and turnovers',
+            '2P%_casa': 'Home 2-point field goal percentage (%)',
+            'Pts_casa': 'Home points',
+            '2P_casa': 'Home 2-point field goals made',
+            'LL%_visitante': 'Away free throw percentage (%)',
+            'EF_visitante': 'Away offensive efficiency',
+            '2PT_visitante': 'Away 2-point field goals made',
+            'RD_visitante': 'Away defensive rebounds',
+            'EN_casa': 'Home unforced errors',
+            '3P%_casa': 'Home 3-point field goal percentage (%)'
         }
 
-        # Renaming the index
+        # Rename the index
         importance_df.index = importance_df.index.map(map_feature_name)
 
-        # Sorting by importance
+        # Sort by importance
         importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
-        # Selecting only 15 main features
+        # Select only the top 15 features
         top_features_df = importance_df.head(15)
 
-        # Saving the global feature importance
+        # Save global feature importance
         global_output_dir = os.path.join(base_path, 'results', 'experiment_02', 'feature_importance')
         os.makedirs(global_output_dir, exist_ok=True)
         
-        # Plotando o gráfico
+        # Plot the graph
         fig, ax = plt.subplots(figsize=(14, 8))
         bars = ax.bar(top_features_df.index, top_features_df['Importance'])
 
-        # Título e eixos
+        # Title and axes
         ax.set_title("Top 15 Global Feature Importance")
         ax.set_ylabel("Importance (sum across all models)")
         plt.xticks(rotation=45, ha='right')
 
-        # Monta a legenda personalizada com os nomes reais das features
-        #feature_legends = [f"{abbr}: {full}" for abbr, full in zip(top_features_df.index, top_features_df.index)]
+        # Build the custom legend with the real feature names
         feature_legends = [f"{abbr}: {feature_descriptions.get(abbr, abbr)}" for abbr in top_features_df.index]
 
-        # Junta tudo em uma string
+        # Join everything into a single string
         legend_text = "\n".join(feature_legends)
 
-        # Estilo da caixa
+        # Style of the legend box
         props = dict(facecolor='white', alpha=0.8)
 
-        # Adiciona a legenda dentro da área do gráfico, por exemplo no canto superior direito
+        # Add the legend inside the plot area (e.g., top right corner)
         ax.text(0.50, 0.98, legend_text, transform=ax.transAxes,
                 fontsize=12, verticalalignment='top', bbox=props)
 
@@ -145,10 +144,10 @@ if __name__ == '__main__':
     results = []
 
     seasons = [
-        #'2008-2009', '2009-2010', '2011-2012',
-        #'2012-2013', '2013-2014', '2014-2015',
-        #'2015-2016', '2016-2017', '2018-2019', '2019-2020',
-        #'2020-2021', '2021-2022', '2022-2023',
+        # '2008-2009', '2009-2010', '2011-2012',
+        # '2012-2013', '2013-2014', '2014-2015',
+        # '2015-2016', '2016-2017', '2018-2019', '2019-2020',
+        # '2020-2021', '2021-2022', '2022-2023',
         '2023-2024'
     ]
     
@@ -166,7 +165,7 @@ if __name__ == '__main__':
             for season in seasons:
                 data_dir = os.path.join(base_path, "data", "experiment_02", season, f'{train_games_count}-{test_games_count}')
 
-                # Running models for one season
+                # Run models for one season
                 print(f'Running model for season {season}, with window {train_games_count} - {test_games_count}')
 
                 accuracy_by_season, f1_score_by_season = run_models(data_dir)
