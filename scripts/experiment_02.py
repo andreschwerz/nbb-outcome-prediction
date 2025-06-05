@@ -60,7 +60,7 @@ def run_models(data_dir):
                     feature_importance_sum[feature_name] += importance
                 else:
                     feature_importance_sum[feature_name] = importance
-    
+
     # 🔥 After finishing all files for the season:
     if feature_importance_sum:
         # Create the importance DataFrame
@@ -71,47 +71,54 @@ def run_models(data_dir):
             # Extract the number after "f" and convert to int
             idx = int(f[1:])
             return feature_names_dict.get(idx, f)  # If not found in the dictionary, keep the original
-        
-        # Dictionary with detailed descriptions of the features
+
+        # Dictionary with detailed descriptions of the features (updated names)
         feature_descriptions = {
-            'placar_casa': 'Home team score',
-            'placar_visitante': 'Away team score',
-            'EF_casa': 'Home offensive efficiency',
-            'RT_casa': 'Home total rebounds',
-            'AS_visitante': 'Away assists',
-            'B/E_visitante': 'Away blocks and turnovers',
-            '2P%_casa': 'Home 2-point field goal percentage (%)',
-            'Pts_casa': 'Home points',
-            '2P_casa': 'Home 2-point field goals made',
-            'LL%_visitante': 'Away free throw percentage (%)',
-            'EF_visitante': 'Away offensive efficiency',
-            '2PT_visitante': 'Away 2-point field goals made',
-            'RD_visitante': 'Away defensive rebounds',
-            'EN_casa': 'Home unforced errors',
-            '3P%_casa': 'Home 3-point field goal percentage (%)'
+            'score_home': 'Home team score',
+            'score_away': 'Away team score',
+            'EF_home': 'Home offensive efficiency',
+            'RT_home': 'Home total rebounds',
+            'AS_away': 'Away assists',
+            'B/E_away': 'Away blocks and turnovers',
+            '2P%_home': 'Home 2-point field goal percentage (%)',
+            'Pts_home': 'Home points',
+            '2P_home': 'Home 2-point field goals made',
+            'LL%_away': 'Away free throw percentage (%)',
+            'EF_away': 'Away offensive efficiency',
+            '2PT_away': 'Away 2-point field goals made',
+            'RD_away': 'Away defensive rebounds',
+            'EN_home': 'Home unforced errors',
+            '3P%_home': 'Home 3-point field goal percentage (%)'
         }
 
         # Rename the index
         importance_df.index = importance_df.index.map(map_feature_name)
 
+        # Atualiza nomes para o novo padrão (_casa → _home, _visitante → _away, placar → score)
+        def rename_feature_name(name):
+            return name.replace('placar', 'score').replace('_casa', '_home').replace('_visitante', '_away')
+
+        importance_df.index = importance_df.index.map(rename_feature_name)
+
         # Sort by importance
         importance_df = importance_df.sort_values(by='Importance', ascending=False)
 
-        # Select only the top 15 features
-        top_features_df = importance_df.head(15)
+        # Select only the top 10 features
+        top_features_df = importance_df.head(10)
 
         # Save global feature importance
         global_output_dir = os.path.join(base_path, 'results', 'experiment_02', 'feature_importance')
         os.makedirs(global_output_dir, exist_ok=True)
-        
+
         # Plot the graph
         fig, ax = plt.subplots(figsize=(14, 8))
         bars = ax.bar(top_features_df.index, top_features_df['Importance'])
 
         # Title and axes
-        ax.set_title("Top 15 Global Feature Importance")
-        ax.set_ylabel("Importance (sum across all models)")
-        plt.xticks(rotation=45, ha='right')
+        # ax.set_title("Top 15 Global Feature Importance")
+        ax.set_ylabel("Importance (sum across all models)", fontsize=16)
+        plt.xticks(rotation=45, ha='right',  fontsize=14)
+        ax.tick_params(axis='y', labelsize=14)
 
         # Build the custom legend with the real feature names
         feature_legends = [f"{abbr}: {feature_descriptions.get(abbr, abbr)}" for abbr in top_features_df.index]
@@ -124,7 +131,7 @@ def run_models(data_dir):
 
         # Add the legend inside the plot area (e.g., top right corner)
         ax.text(0.50, 0.98, legend_text, transform=ax.transAxes,
-                fontsize=12, verticalalignment='top', bbox=props)
+                fontsize=16, verticalalignment='top', bbox=props)
 
         plt.tight_layout()
         plt.savefig(os.path.join(global_output_dir, 'global_feature_importance.png'))
@@ -134,7 +141,6 @@ def run_models(data_dir):
     avg_f1_score = np.mean(f1_scores_by_season)
 
     return avg_accuracy, avg_f1_score
-
 
 if __name__ == '__main__':
     # Start the timer
